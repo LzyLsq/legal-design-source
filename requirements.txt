@@ -1,0 +1,30 @@
+# Web 框架
+flask==3.1.0
+flask-cors==4.0.1
+fastapi==0.112.0
+uvicorn==0.30.6
+python-multipart==0.0.20
+
+# 数据库
+pymysql==1.1.1
+mysql-connector-python==9.1.0
+
+# 模型服务
+openai==1.65.1
+dashscope==1.20.14
+tiktoken==0.7.0
+
+# 文档处理
+python-docx==1.1.2
+markdown==3.7
+markupsafe==3.0.2
+beautifulsoup4==4.12.3
+
+# 数据处理与其他
+requests==2.32.3
+pandas==2.2.2
+pydantic==2.10.6
+kafka-python==2.0.2
+
+# GraphRAG（QA/ragtest 检索增强问答，体积较大，仅该模块需要）
+# graphrag==0.3.0

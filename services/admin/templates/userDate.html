@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理系统</title>
+    <link href="https://unpkg.com/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --danger-color: #f72585;
+            --success-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gradient-start: #4361ee;
+            --gradient-end: #3a0ca3;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        .navbar {
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 0.8rem 2rem;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+
+        .main-container {
+            padding: 2rem;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            background-color: white;
+            margin-bottom: 2rem;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 1.5rem;
+            border-bottom: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .card-header:hover::after {
+            transform: translateX(100%);
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin: 0;
+            font-size: 1.8rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            border-radius: 8px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-danger {
+            background: linear-gradient(to right, #f72585, #b5179e);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(to right, #b5179e, #7209b7);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(247, 37, 133, 0.3);
+        }
+
+        .nav-tabs {
+            border-bottom: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-tabs .nav-link {
+            color: #6c757d;
+            font-weight: 500;
+            border: none;
+            margin-right: 10px;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background-color: rgba(108, 117, 125, 0.1);
+        }
+
+        .nav-tabs .nav-link:hover {
+            background-color: rgba(108, 117, 125, 0.2);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: white;
+            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 0.8rem 1.2rem;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.25);
+            outline: none;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background: white;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .table {
+            margin-bottom: 0;
+            width: 100%;
+        }
+
+        .table thead th {
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            color: white;
+            font-weight: 500;
+            padding: 1rem;
+            border: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            border-radius: 50px;
+            padding: 0.8rem 1.5rem 0.8rem 3rem;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            width: 100%;
+            font-size: 0.95rem;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.25);
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+            font-size: 1.1rem;
+        }
+
+        .alert {
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .alert-success {
+            background-color: rgba(76, 201, 240, 0.1);
+            color: #155724;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .alert-danger {
+            background-color: rgba(247, 37, 133, 0.1);
+            color: #721c24;
+            border-left: 4px solid var(--danger-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
+            z-index: 100;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .floating-btn:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 12px 30px rgba(67, 97, 238, 0.4);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(67, 97, 238, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(67, 97, 238, 0);
+            }
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        /* 模态框样式 */
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        .modal-header {
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+        }
+        .modal-title {
+            font-weight: 600;
+        }
+        .modal-footer {
+            border-top: none;
+        }
+        .delete-modal .modal-header {
+            background: linear-gradient(to right, #f72585, #b5179e);
+        }
+
+        /* 分页样式 */
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            border-color: var(--gradient-start);
+        }
+        .pagination .page-link {
+            color: var(--gradient-start);
+            margin: 0 5px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .pagination .page-link:hover {
+            background-color: #f0f2f5;
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs .nav-link {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+                margin-right: 5px;
+            }
+            .table td, .table th {
+                padding: 0.8rem;
+                font-size: 0.85rem;
+            }
+            .card-header {
+                padding: 1rem;
+            }
+            .card-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        .btn-outline-light {
+            border-color: rgba(255,255,255,0.5);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-light:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-color: white;
+        }
+    </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<nav class="navbar navbar-expand-lg navbar-dark animate__animated animate__fadeInDown">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-users-cog"></i>
+            <span>用户管理系统</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/"><i class="fas fa-home me-1"></i>首页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                        <i class="fas fa-user-plus me-1"></i>添加用户
+                    </a>
+                </li>
+            </ul>
+            <div class="ms-3 d-flex align-items-center">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span class="text-white me-3">管理员</span>
+                <a href="http://127.0.0.1:8003" class="btn btn-sm btn-outline-light">
+                    <i class="fas fa-sign-out-alt me-1"></i> 退出系统
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- 主内容区 -->
+<div class="main-container">
+    <div class="container-fluid">
+        <div class="card animate__animated animate__fadeInUp">
+            <div class="card-header">
+                <h2 class="card-title text-center">用户管理控制台</h2>
+            </div>
+            <div class="card-body">
+                <!-- 消息提示 -->
+                <div id="messageAlert" class="alert" style="display: none;">
+                    <i class="fas fa-check-circle me-2"></i> <span id="messageText"></span>
+                </div>
+
+                <!-- 修改搜索表单部分 -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0"><i class="fas fa-users me-2"></i>用户信息列表</h4>
+                    <div class="d-flex">
+                        <form class="search-container me-3" style="width: 300px;" id="searchForm">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" class="form-control search-input" id="searchInput"
+                                   name="search" placeholder="输入ID或用户名..." value="{{ search }}">
+                            <small class="form-text text-muted position-absolute" style="bottom: -20px; left: 15px;">
+                                可输入用户ID或用户名进行搜索
+                            </small>
+                        </form>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                            <i class="fas fa-user-plus me-1"></i> 添加用户
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 用户信息表格 -->
+                <div class="table-container">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>用户名</th>
+                            <th>邮箱</th>
+                            <th>注册时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="user-avatar me-2">
+                                        {{ user.username|first|upper }}
+                                    </div>
+                                    <span>{{ user.username }}</span>
+                                </div>
+                            </td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.created_at }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary me-2 edit-btn"
+                                        data-id="{{ user.id }}">
+                                    <i class="fas fa-edit me-1"></i> 编辑
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger delete-btn"
+                                        data-id="{{ user.id }}">
+                                    <i class="fas fa-trash-alt me-1"></i> 删除
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 分页导航 -->
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('index', page=page-1, search=search) }}">上一页</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">上一页</a>
+                        </li>
+                        {% endif %}
+
+                        {% for p in range(1, total_pages + 1) %}
+                        <li class="page-item {% if p == page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('index', page=p, search=search) }}">{{ p }}</a>
+                        </li>
+                        {% endfor %}
+
+                        {% if page < total_pages %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('index', page=page+1, search=search) }}">下一页</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">下一页</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 添加用户模态框 -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">添加新用户</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addUserForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="addUsername" class="form-label">用户名</label>
+                        <input type="text" class="form-control" id="addUsername" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addEmail" class="form-label">邮箱</label>
+                        <input type="email" class="form-control" id="addEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addPassword" class="form-label">密码</label>
+                        <input type="password" class="form-control" id="addPassword" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addConfirmPassword" class="form-label">确认密码</label>
+                        <input type="password" class="form-control" id="addConfirmPassword" name="confirm_password" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">添加用户</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑用户模态框 -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">编辑用户信息</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editUserForm">
+                <div class="modal-body">
+                    <input type="hidden" id="editUserId" name="user_id">
+                    <div class="form-group">
+                        <label for="editUsername" class="form-label">用户名</label>
+                        <input type="text" class="form-control" id="editUsername" name="new_username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmail" class="form-label">邮箱</label>
+                        <input type="email" class="form-control" id="editEmail" name="new_email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPassword" class="form-label">新密码 (留空则不修改)</label>
+                        <input type="password" class="form-control" id="editPassword" name="new_password">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">保存更改</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 删除确认模态框 -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">确认删除</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>确定要删除这个用户吗？此操作不可恢复！</p>
+                <input type="hidden" id="deleteUserId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">确认删除</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 浮动按钮 -->
+<a href="#" class="floating-btn animate__animated animate__fadeInUp" data-bs-toggle="modal" data-bs-target="#addUserModal">
+    <i class="fas fa-plus"></i>
+</a>
+
+<!-- 脚本 -->
+<script src="https://unpkg.com/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addUserModal = new bootstrap.Modal(document.getElementById('addUserModal'));
+        const editUserModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+        const deleteConfirmModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+
+        // 显示消息提示
+        function showMessage(message, type = 'success') {
+            const alertDiv = document.getElementById('messageAlert');
+            const messageText = document.getElementById('messageText');
+
+            alertDiv.style.display = 'block';
+            alertDiv.className = `alert alert-${type} animate__animated animate__fadeIn`;
+            messageText.textContent = message;
+
+            setTimeout(() => {
+                alertDiv.classList.add('animate__fadeOut');
+                setTimeout(() => {
+                    alertDiv.style.display = 'none';
+                    alertDiv.classList.remove('animate__fadeOut');
+                }, 500);
+            }, 3000);
+        }
+
+        // 搜索表单提交
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const search = document.getElementById('searchInput').value;
+            window.location.href = `/?search=${encodeURIComponent(search)}`;
+        });
+
+        // 添加用户表单提交
+        document.getElementById('addUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const password = document.getElementById('addPassword').value;
+            const confirmPassword = document.getElementById('addConfirmPassword').value;
+
+            if (password !== confirmPassword) {
+                showMessage('两次输入的密码不一致！', 'danger');
+                return;
+            }
+
+            const formData = {
+                operation: 'add',
+                username: document.getElementById('addUsername').value.trim(),
+                email: document.getElementById('addEmail').value.trim(),
+                password: password
+            };
+
+            fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    showMessage(data.message, data.status);
+                    if (data.status === 'success') {
+                        addUserModal.hide();
+                        this.reset();
+                        setTimeout(() => location.reload(), 1000);
+                    }
+                })
+                .catch(error => {
+                    showMessage('添加用户失败: ' + error, 'danger');
+                });
+        });
+
+        // 表格中的编辑按钮点击事件
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const userId = this.getAttribute('data-id');
+
+                fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        operation: 'get_user',
+                        user_id: userId
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            document.getElementById('editUserId').value = data.user.id;
+                            document.getElementById('editUsername').value = data.user.username;
+                            document.getElementById('editEmail').value = data.user.email;
+                            document.getElementById('editPassword').value = '';
+                            editUserModal.show();
+                        } else {
+                            showMessage(data.message, 'danger');
+                        }
+                    })
+                    .catch(error => {
+                        showMessage('获取用户信息失败: ' + error, 'danger');
+                    });
+            });
+        });
+
+        // 编辑表单提交
+        document.getElementById('editUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                operation: 'update',
+                user_id: document.getElementById('editUserId').value,
+                new_username: document.getElementById('editUsername').value.trim(),
+                new_email: document.getElementById('editEmail').value.trim(),
+                new_password: document.getElementById('editPassword').value || undefined
+            };
+
+            fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    showMessage(data.message, data.status);
+                    if (data.status === 'success') {
+                        editUserModal.hide();
+                        setTimeout(() => location.reload(), 1000);
+                    }
+                })
+                .catch(error => {
+                    showMessage('更新用户失败: ' + error, 'danger');
+                });
+        });
+
+        // 表格中的删除按钮点击事件
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const userId = this.getAttribute('data-id');
+                document.getElementById('deleteUserId').value = userId;
+                deleteConfirmModal.show();
+            });
+        });
+
+
+        // 确认删除按钮点击事件
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            const userId = document.getElementById('deleteUserId').value;
+
+            fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    operation: 'delete',
+                    user_id: userId
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    showMessage(data.message, data.status);
+                    deleteConfirmModal.hide();
+                    if (data.status === 'success') {
+                        setTimeout(() => location.reload(), 1000);
+                    }
+                })
+                .catch(error => {
+                    showMessage('删除用户失败: ' + error, 'danger');
+                });
+        });
+    });
+</script>
+</body>
+</html>

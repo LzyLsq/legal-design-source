@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合同信息管理系统</title>
+  <link href="https://unpkg.com/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        :root {
+            --primary-color: #5e72e4;
+            --secondary-color: #4a56d6;
+            --accent-color: #667eea;
+            --light-color: #f8f9fa;
+            --dark-color: #2d3748;
+            --success-color: #48bb78;
+            --warning-color: #ed8936;
+            --danger-color: #f56565;
+            --gradient-start: #667eea;
+            --gradient-end: #764ba2;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-color: #2d3748;
+            --text-muted: #718096;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 粒子背景容器 */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* 导航栏样式 */
+        .navbar {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            padding: 0.8rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+
+        /* 主容器样式 */
+        .main-container {
+            padding: 2rem;
+            animation: fadeIn 0.8s ease;
+            position: relative;
+        }
+
+        /* 卡片样式 */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            background: var(--card-bg);
+            margin-bottom: 2rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 1.5rem;
+            border-bottom: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .card-header:hover::after {
+            transform: translateX(100%);
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin: 0;
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 按钮样式 */
+        .btn {
+            border-radius: 8px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(101, 114, 228, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            border-radius: 50px;
+            padding: 0.8rem 1.5rem 0.8rem 3rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            width: 100%;
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+            outline: none;
+            background: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        /* 表格样式 */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background: var(--card-bg);
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .table {
+            margin-bottom: 0;
+            width: 100%;
+        }
+
+        .table thead th {
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            color: white;
+            font-weight: 500;
+            padding: 1rem;
+            border: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(101, 114, 228, 0.08);
+            transform: translateX(5px);
+        }
+
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            white-space: nowrap;
+        }
+
+        .table td:first-child {
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        /* 风险等级标签 */
+        .risk-label {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .risk-high {
+            background-color: rgba(245, 101, 101, 0.1);
+            color: var(--danger-color);
+        }
+
+        .risk-medium {
+            background-color: rgba(237, 137, 54, 0.1);
+            color: var(--warning-color);
+        }
+
+        .risk-low {
+            background-color: rgba(72, 187, 120, 0.1);
+            color: var(--success-color);
+        }
+
+        /* 操作按钮 */
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background-color: rgba(94, 114, 228, 0.1);
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+            margin-right: 5px;
+        }
+
+        .action-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .animate-delay-2 {
+            animation-delay: 0.4s;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 992px) {
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .table thead th {
+                font-size: 0.9rem;
+                padding: 0.8rem;
+            }
+
+            .table td {
+                padding: 0.8rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* 浮动操作按钮 */
+        .floating-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(101, 114, 228, 0.5);
+            z-index: 100;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+            border: none;
+        }
+
+        .floating-btn:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 12px 30px rgba(101, 114, 228, 0.6);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(101, 114, 228, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(101, 114, 228, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(101, 114, 228, 0);
+            }
+        }
+
+        /* 图标圆背景 */
+        .icon-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bg-light-primary {
+            background-color: rgba(94, 114, 228, 0.1);
+        }
+
+        /* 分页样式增强 */
+        .page-size-selector {
+            width: 120px;
+            display: inline-block;
+            margin-right: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .page-jump-input {
+            width: 80px;
+            display: inline-block;
+            margin: 0 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .pagination-info {
+            margin-right: 20px;
+            color: var(--text-muted);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 10px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* 退出按钮样式 */
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            margin-left: 15px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .logout-btn a{
+            text-decoration: none;
+            color: white;
+        }
+
+        /* 页面标题样式 */
+        h2 {
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .text-muted {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        /* 表单控件样式 */
+        .form-select, .form-control {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus, .form-control:focus {
+            background: white;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+
+        /* 分页样式 */
+        .page-link {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--primary-color);
+        }
+
+        .page-item.active .page-link {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* 进度条样式 */
+        .progress {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+
+        .progress-bar {
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<!-- 粒子背景 -->
+<div id="particles-js"></div>
+
+<!-- 导航栏 -->
+<nav class="navbar navbar-expand-lg navbar-dark animate__animated animate__fadeInDown">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-file-contract"></i>
+            <span>合同信息管理系统</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">首页</a>
+                </li>
+            </ul>
+            <div class="ms-3 d-flex align-items-center">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span class="text-white">管理员</span>
+                <button class="logout-btn" id="logoutBtn">
+                    <a href="http://127.0.0.1:8003">
+                        <i class="fas fa-sign-out-alt me-1"></i>退出系统</a>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- 主内容区 -->
+<div class="main-container">
+    <div class="container-fluid">
+        <!-- 标题和操作按钮 -->
+        <div class="row mb-4 animate__animated animate__fadeIn animate-delay-1">
+            <div class="col-md-6">
+                <h2 class="mb-0">合同信息列表</h2>
+                <p class="text-muted mb-0">管理系统中的所有合同信息</p>
+            </div>
+            <div class="col-md-6 d-flex align-items-center justify-content-end">
+                <button class="btn btn-primary me-2" id="addContractBtn">
+                    <i class="fas fa-plus me-1"></i> 新增合同
+                </button>
+                <button class="btn btn-outline-primary" id="exportDataBtn">
+                    <i class="fas fa-download me-1"></i> 导出数据
+                </button>
+            </div>
+        </div>
+
+        <!-- 搜索和筛选 -->
+        <div class="row mb-4 animate__animated animate__fadeIn animate-delay-2">
+            <div class="col-md-8">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="form-control search-input" placeholder="搜索合同名称、客户ID或风险等级..." id="searchInput">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex">
+                    <select class="form-select me-2" id="contractTypeFilter">
+                        <option value="" selected>所有合同类型</option>
+                        <option value="买卖合同">买卖合同</option>
+                        <option value="赠与合同">赠与合同</option>
+                        <option value="借款合同">借款合同</option>
+                        <option value="保证合同">保证合同</option>
+                        <option value="租赁合同">租赁合同</option>
+                        <option value="承揽合同">承揽合同</option>
+                        <option value="运输合同">运输合同</option>
+                        <option value="服务合同">服务合同</option>
+                        <option value="技术合同">技术合同</option>
+                        <option value="保管合同">保管合同</option>
+                        <option value="仓储合同">仓储合同</option>
+                        <option value="委托合同">委托合同</option>
+                        <option value="行纪合同">行纪合同</option>
+                        <option value="中介合同">中介合同</option>
+                        <option value="合伙合同">合伙合同</option>
+                    </select>
+                    <select class="form-select" id="riskLevelFilter">
+                        <option value="" selected>所有风险等级</option>
+                        <option placeholder="高" selected>高风险</option>
+                        <option placeholder="中" selected>中风险</option>
+                        <option placeholder="低" selected>低风险</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 合同表格 -->
+        <div class="card animate__animated animate__fadeInUp">
+            <div class="card-header">
+                <h3 class="card-title mb-0">合同列表</h3>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-container">
+                    <table class="table table-hover" id="contractTable">
+                        <thead>
+                        <tr>
+                            <th>合同名称</th>
+                            <th>合同类型</th>
+                            <th>合同金额</th>
+                            <th>支付条款</th>
+                            <th>履行开始日期</th>
+                            <th>履行结束日期</th>
+                            <th>交付条款</th>
+                            <th>违约条款</th>
+                            <th>争议解决方式</th>
+                            <th>甲方信用评级</th>
+                            <th>乙方信用评级</th>
+                            <th>市场条件</th>
+                            <th>行业趋势</th>
+                            <th>客户ID</th>
+                            <th>风险指数</th>
+                            <th>风险等级</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="contractTableBody">
+                        <!-- 数据将通过JavaScript动态加载 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <span class="pagination-info me-3">显示 <strong id="startItem">0</strong>-<strong id="endItem">0</strong> 条，共 <strong id="totalItems">0</strong> 条记录</span>
+                        <select class="form-select page-size-selector" id="pageSizeSelector">
+                            <option value="5">每页5条</option>
+                            <option value="10" selected>每页10条</option>
+                            <option value="20">每页20条</option>
+                            <option value="50">每页50条</option>
+                            <option value="100">每页100条</option>
+                        </select>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <nav>
+                            <ul class="pagination mb-0" id="pagination">
+                                <!-- 分页按钮将通过JavaScript动态生成 -->
+                            </ul>
+                        </nav>
+                        <div class="ms-3 d-flex align-items-center">
+                            <span>跳至</span>
+                            <input type="number" min="1" class="form-control page-jump-input" id="pageJumpInput">
+                            <span>页</span>
+                            <button class="btn btn-sm btn-primary ms-2" id="pageJumpBtn">跳转</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 浮动按钮 -->
+<a href="#" class="floating-btn animate__animated animate__fadeInUp" id="floatingAddBtn">
+    <i class="fas fa-plus"></i>
+</a>
+
+<!-- 粒子效果库 -->
+<script src="https://unpkg.com/particles.js@2.0.0/particles.min.js"></script>
+<!-- 脚本 -->
+<script src="https://unpkg.com/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // 初始化粒子效果
+    document.addEventListener('DOMContentLoaded', function() {
+        particlesJS('particles-js', {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#ffffff"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ffffff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 2,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+    });
+
+    // 分页状态
+    let currentPage = 1;
+    let pageSize = 10;
+    let totalContracts = 0;
+
+    // 从后端获取合同数据
+    async function fetchContracts() {
+        const searchTerm = document.getElementById('searchInput').value;
+        const contractType = document.getElementById('contractTypeFilter').value;
+        const riskLevel = document.getElementById('riskLevelFilter').value;
+
+        try {
+            const response = await fetch(`/api/contracts?page=${currentPage}&per_page=${pageSize}&search=${encodeURIComponent(searchTerm)}&contract_type=${encodeURIComponent(contractType)}&risk_level=${encodeURIComponent(riskLevel)}`);
+            const data = await response.json();
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            totalContracts = data.total;
+            renderContracts(data.data);
+            renderPagination();
+        } catch (error) {
+            console.error('获取合同数据失败:', error);
+            alert('获取合同数据失败: ' + error.message);
+        }
+    }
+
+    // 渲染合同表格
+    function renderContracts(contracts) {
+        const contractTableBody = document.getElementById('contractTableBody');
+
+        // 更新显示信息
+        document.getElementById('startItem').textContent = contracts.length > 0 ? (currentPage - 1) * pageSize + 1 : 0;
+        document.getElementById('endItem').textContent = (currentPage - 1) * pageSize + contracts.length;
+        document.getElementById('totalItems').textContent = totalContracts;
+
+        // 清空表格
+        contractTableBody.innerHTML = '';
+
+        // 如果没有数据，显示空状态
+        if (contracts.length === 0) {
+            const emptyRow = document.createElement('tr');
+            emptyRow.innerHTML = `
+                <td colspan="17" class="text-center py-4 text-muted">
+                    <i class="fas fa-inbox fa-2x mb-3"></i>
+                    <p class="mb-0">没有找到匹配的合同数据</p>
+                </td>
+            `;
+            contractTableBody.appendChild(emptyRow);
+            return;
+        }
+
+        // 填充数据
+        contracts.forEach(contract => {
+            const row = document.createElement('tr');
+            row.className = 'animate__animated animate__fadeIn';
+            row.innerHTML = `
+                <td>
+                    <div class="d-flex align-items-center">
+                        <div class="icon-circle bg-light-primary me-3">
+                            <i class="fas fa-file-contract text-primary"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">${contract.contract_name}</h6>
+                            <small class="text-muted">ID: ${contract.id || ''}</small>
+                        </div>
+                    </div>
+                </td>
+                <td>${contract.contract_type || ''}</td>
+                <td>¥${contract.contract_amount ? contract.contract_amount.toLocaleString() : '0.00'}</td>
+                <td>${contract.payment_terms || ''}</td>
+                <td>${contract.performance_period_start || ''}</td>
+                <td>${contract.performance_period_end || ''}</td>
+                <td>${contract.deliverables || ''}</td>
+                <td>${contract.breach_clauses || ''}</td>
+                <td>${contract.dispute_resolution || ''}</td>
+                <td>${contract.party_a_credit_rating || ''}</td>
+                <td>${contract.party_b_credit_rating || ''}</td>
+                <td>${contract.market_conditions || ''}</td>
+                <td>${contract.industry_trends || ''}</td>
+                <td>${contract.customer_id || ''}</td>
+                <td>
+                    <div class="progress" style="height: 6px;">
+                        <div class="progress-bar
+                            ${contract.risk_index > 70 ? 'bg-danger' : contract.risk_index > 40 ? 'bg-warning' : 'bg-success'}"
+                            role="progressbar"
+                            style="width: ${contract.risk_index || 0}%">
+                        </div>
+                    </div>
+                    <small>${contract.risk_index || 0}%</small>
+                </td>
+                <td>
+                    <span class="risk-label
+                        ${contract.risk_level === '高' ? 'risk-high' :
+                contract.risk_level === '中' ? 'risk-medium' : 'risk-low'}">
+                        ${contract.risk_level || '未知'}
+                    </span>
+                </td>
+                <td>
+                    <button class="action-btn view-btn" title="查看详情" data-id="${contract.id || ''}">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="action-btn edit-btn" title="编辑" data-id="${contract.id || ''}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn delete-btn" title="删除" data-id="${contract.id || ''}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            contractTableBody.appendChild(row);
+        });
+    }
+
+    // 渲染分页按钮
+    function renderPagination() {
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+
+        const totalPages = Math.ceil(totalContracts / pageSize);
+        if (totalPages <= 1) return;
+
+        // 上一页按钮
+        const prevLi = document.createElement('li');
+        prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+        prevLi.innerHTML = `<a class="page-link" href="#" tabindex="-1">上一页</a>`;
+        prevLi.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (currentPage > 1) {
+                currentPage--;
+                fetchContracts();
+            }
+        });
+        pagination.appendChild(prevLi);
+
+        // 页码按钮
+        const maxVisiblePages = 5;
+        let startPage, endPage;
+
+        if (totalPages <= maxVisiblePages) {
+            startPage = 1;
+            endPage = totalPages;
+        } else {
+            const maxPagesBeforeCurrent = Math.floor(maxVisiblePages / 2);
+            const maxPagesAfterCurrent = Math.ceil(maxVisiblePages / 2) - 1;
+
+            if (currentPage <= maxPagesBeforeCurrent) {
+                startPage = 1;
+                endPage = maxVisiblePages;
+            } else if (currentPage + maxPagesAfterCurrent >= totalPages) {
+                startPage = totalPages - maxVisiblePages + 1;
+                endPage = totalPages;
+            } else {
+                startPage = currentPage - maxPagesBeforeCurrent;
+                endPage = currentPage + maxPagesAfterCurrent;
+            }
+        }
+
+        // 第一页按钮
+        if (startPage > 1) {
+            const firstLi = document.createElement('li');
+            firstLi.className = 'page-item';
+            firstLi.innerHTML = `<a class="page-link" href="#">1</a>`;
+            firstLi.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentPage = 1;
+                fetchContracts();
+            });
+            pagination.appendChild(firstLi);
+
+            if (startPage > 2) {
+                const ellipsisLi = document.createElement('li');
+                ellipsisLi.className = 'page-item disabled';
+                ellipsisLi.innerHTML = `<span class="page-link">...</span>`;
+                pagination.appendChild(ellipsisLi);
+            }
+        }
+
+        // 中间页码按钮
+        for (let i = startPage; i <= endPage; i++) {
+            const pageLi = document.createElement('li');
+            pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+            pageLi.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+            pageLi.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentPage = i;
+                fetchContracts();
+            });
+            pagination.appendChild(pageLi);
+        }
+
+        // 最后一页按钮
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                const ellipsisLi = document.createElement('li');
+                ellipsisLi.className = 'page-item disabled';
+                ellipsisLi.innerHTML = `<span class="page-link">...</span>`;
+                pagination.appendChild(ellipsisLi);
+            }
+
+            const lastLi = document.createElement('li');
+            lastLi.className = 'page-item';
+            lastLi.innerHTML = `<a class="page-link" href="#">${totalPages}</a>`;
+            lastLi.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentPage = totalPages;
+                fetchContracts();
+            });
+            pagination.appendChild(lastLi);
+        }
+
+        // 下一页按钮
+        const nextLi = document.createElement('li');
+        nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+        nextLi.innerHTML = `<a class="page-link" href="#">下一页</a>`;
+        nextLi.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (currentPage < totalPages) {
+                currentPage++;
+                fetchContracts();
+            }
+        });
+        pagination.appendChild(nextLi);
+    }
+
+    // 初始化
+    function init() {
+        // 初始化获取数据
+        fetchContracts();
+
+        // 事件监听
+        document.getElementById('pageSizeSelector').addEventListener('change', (e) => {
+            pageSize = parseInt(e.target.value);
+            currentPage = 1;
+            fetchContracts();
+        });
+
+        document.getElementById('pageJumpBtn').addEventListener('click', () => {
+            const pageNum = parseInt(document.getElementById('pageJumpInput').value);
+            const totalPages = Math.ceil(totalContracts / pageSize);
+
+            if (pageNum >= 1 && pageNum <= totalPages) {
+                currentPage = pageNum;
+                fetchContracts();
+                document.getElementById('pageJumpInput').value = '';
+            } else {
+                alert(`请输入有效的页码 (1-${totalPages})`);
+            }
+        });
+
+        // 回车跳转页码
+        document.getElementById('pageJumpInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('pageJumpBtn').click();
+            }
+        });
+
+        // 搜索和筛选事件
+        document.getElementById('searchInput').addEventListener('input', fetchContracts);
+        document.getElementById('contractTypeFilter').addEventListener('change', fetchContracts);
+        document.getElementById('riskLevelFilter').addEventListener('change', fetchContracts);
+
+        // 新增合同按钮
+        document.getElementById('addContractBtn').addEventListener('click', () => {
+            alert('新增合同功能待实现');
+        });
+
+        document.getElementById('floatingAddBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('addContractBtn').click();
+        });
+
+        // 导出数据按钮
+        document.getElementById('exportDataBtn').addEventListener('click', () => {
+            alert('导出数据功能待实现');
+        });
+
+        // 退出系统按钮
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            if (confirm('确定要退出系统吗？')) {
+                // 这里可以添加退出逻辑，比如清除登录状态等
+                alert('已退出系统');
+                // 实际应用中通常会重定向到登录页
+                // window.location.href = '/login';
+            }
+        });
+
+        // 搜索框获取焦点时动画
+        document.getElementById('searchInput').addEventListener('focus', function() {
+            this.parentNode.querySelector('.search-icon').style.color = '#5e72e4';
+        });
+
+        document.getElementById('searchInput').addEventListener('blur', function() {
+            this.parentNode.querySelector('.search-icon').style.color = '#718096';
+        });
+    }
+
+    // 使用事件委托处理动态生成的按钮点击
+    document.addEventListener('click', function(e) {
+        // 查看详情
+        if (e.target.closest('.view-btn')) {
+            const btn = e.target.closest('.view-btn');
+            const contractId = btn.getAttribute('data-id');
+            alert(`查看合同详情: ${contractId}`);
+        }
+
+        // 编辑合同
+        if (e.target.closest('.edit-btn')) {
+            const btn = e.target.closest('.edit-btn');
+            const contractId = btn.getAttribute('data-id');
+            alert(`编辑合同: ${contractId}`);
+        }
+
+        // 删除合同
+        if (e.target.closest('.delete-btn')) {
+            const btn = e.target.closest('.delete-btn');
+            const contractId = btn.getAttribute('data-id');
+            if (confirm(`确定要删除合同 ${contractId} 吗？`)) {
+                alert(`合同 ${contractId} 删除成功`);
+                fetchContracts();
+            }
+        }
+    });
+
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

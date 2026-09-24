@@ -1,0 +1,207 @@
+/* 主容器 */
+.qa-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%, #2A3F54 90%);
+  color: #2A3F54;
+}
+
+/* 法律条纹背景 */
+.legal-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 10px,
+          #2A3F54 10px,
+          #2A3F54 20px
+  );
+  opacity: 0.1;
+  z-index: 0;
+}
+
+/* 粒子效果 */
+.particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: linear-gradient(45deg, #C4A86A, #968264);
+  border-radius: 50%;
+  animation: float 4s infinite ease-in-out, pulse 2s infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.8; }
+  50% { transform: translateY(-40px) translateX(20px); opacity: 0.3; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(0.8); }
+  50% { transform: scale(1.2); }
+}
+
+/* 法律图标动画（仅保留其他图标） */
+.legal-patterns {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.legal-icon {
+  position: absolute;
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.3;
+  animation: rotate 10s infinite linear;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg) translateY(0); }
+  50% { transform: rotate(5deg) translateY(-15px); }
+  100% { transform: rotate(0deg) translateY(0); }
+}
+
+.legal-icon-scale {
+  width: 100px;
+  height: 100px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23C4A86A'%3E%3Cpath d='M12 2L9.12 5h5.76L12 2M12 6a3 3 0 0 0-3 3v1h6V9a3 3 0 0 0-3-3m7 3h-1v6l4 4H4l4-4V9H7a5 5 0 0 1-5 5v4h18v-4a5 5 0 0 1-5-5z'/%3E%3C/svg%3E");
+  top: 20%;
+  right: 10%;
+}
+
+/* 内容区域 */
+.qa-content {
+  max-width: 800px;
+  width: 100%;
+  position: relative;
+  z-index: 3;
+}
+
+.qa-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(196, 168, 106, 0.15);
+  backdrop-filter: blur(8px);
+  padding: 24px;
+}
+
+/* 增大标题字体大小和加粗，并使其居中 */
+.qa-card .ant-card-head-title {
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.input-container {
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+}
+
+/* 增大输入框占位符字体大小和颜色加深 */
+.question-input::placeholder {
+  font-size: 16px;
+  color: #333;
+}
+
+.question-input {
+  flex: 1;
+  border-radius: 8px;
+  border: 1px solid rgba(196, 168, 106, 0.3);
+  transition: all 0.3s ease;
+  padding: 12px;
+  font-family: 'Noto Serif', serif;
+}
+
+.question-input:focus {
+  border-color: #C4A86A;
+  box-shadow: 0 0 0 2px rgba(196, 168, 106, 0.3);
+  transform: translateY(-2px);
+}
+
+.ask-button {
+  height: auto;
+  padding: 12px 24px;
+  background: #968264;
+  border: none;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  font-weight: bold;
+  color: white;
+}
+
+.ask-button:hover {
+  background: #C4A86A;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(196, 168, 106, 0.3);
+}
+
+.loading-container {
+  text-align: center;
+  padding: 60px 0;
+}
+
+/* 回答区域 */
+.answer-card {
+  margin-top: 24px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  animation: slideIn 0.5s ease;
+}
+
+@keyframes slideIn {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.answer-content {
+  white-space: pre-line;
+  line-height: 1.6;
+  color: #2A3F54;
+  font-family: 'Inconsolata', monospace;
+  padding: 16px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .qa-container {
+    padding: 1rem;
+  }
+
+  .input-container {
+    gap: 8px;
+  }
+
+  .ask-button {
+    width: 100%;
+  }
+
+  .answer-card {
+    margin-top: 16px;
+  }
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat</title>
+    <link rel="stylesheet" href="../static/js/kimi.css">
+    <style>
+        /* 返回按钮的样式 */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #fef5e1, #fbe3c4); /* 极浅的肤色渐变 */
+            color: #333; /* 深色文字，增强可读性 */
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .back-button:hover {
+            opacity: 0.9;
+            transform: translateY(-3px); /* 略微上移，增强浮动效果 */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* 更强的阴影 */
+        }
+
+        .back-button:focus {
+            outline: none; /* 去除聚焦时的边框 */
+        }
+
+        .back-button:active {
+            transform: translateY(0); /* 点击时恢复原位 */
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); /* 点击时恢复初始阴影 */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 返回按钮 -->
+    <a href="http://127.0.0.1:5020/result" class="back-button">返回</a>
+
+    <div class="chat-container">
+        <!-- 聊天头部 -->
+        <div class="chat-header">智能案例分析</div>
+        <!-- 清空聊天记录按钮 -->
+        <button class="clear-button" onclick="clearChat()">清空记录</button>
+        <!-- 消息显示区域 -->
+        <div class="chat-messages" id="chat-messages">
+            <div class="chat-message ai-message">案例分析助手:欢迎来到智能案例分析世界，有什么案例疑问都能问我哟！</div>
+        </div>
+        <!-- 输入区域 -->
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="输入你的问题..." onkeydown="if (event.key === 'Enter') sendMessage()">
+            <button class="send-button" onclick="sendMessage()" id="send-button">发送</button>
+            <button class="voice-button" onclick="startVoiceInput()" id="voice-button">语音输入</button>
+            <div class="loading" id="loading"></div>
+        </div>
+    </div>
+
+    <script src="../static/js/kimi.js"></script>
+
+</body>
+
+</html>

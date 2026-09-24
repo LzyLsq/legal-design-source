@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>法律管理系统 - 修改密码</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --text-color: #2c3e50;
+            --text-light: #7f8c8d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark-color) 0%, var(--primary-color) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 粒子背景效果 */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: 0;
+        }
+
+        .password-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem 3rem;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 480px;
+            transform: translateY(0);
+            animation: fadeInUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1;
+        }
+
+        .password-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                    to bottom right,
+                    rgba(52, 152, 219, 0.1) 0%,
+                    rgba(231, 76, 60, 0.1) 100%
+            );
+            transform: rotate(30deg);
+            z-index: -1;
+            animation: gradientRotate 15s infinite linear;
+        }
+
+        @keyframes gradientRotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo img {
+            width: 180px;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
+            animation: float 4s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover img {
+            filter: drop-shadow(0 8px 25px rgba(0, 0, 0, 0.3));
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-color);
+            transition: width 0.4s ease;
+            z-index: 2;
+        }
+
+        .input-wrapper.focused::before {
+            width: 100%;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 1.1rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 1;
+            background: rgba(236, 240, 241, 0.7);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+            color: var(--text-color);
+        }
+
+        input:focus {
+            outline: none;
+            background: rgba(236, 240, 241, 0.9);
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            cursor: pointer;
+            z-index: 2;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .password-toggle:hover {
+            color: var(--secondary-color);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .btn-change {
+            width: 100%;
+            padding: 1.1rem;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
+            z-index: 1;
+        }
+
+        .btn-change::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .btn-change:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-change:hover::before {
+            opacity: 1;
+        }
+
+        .btn-change:active {
+            transform: translateY(1px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-change .icon {
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-change:hover .icon {
+            transform: translateX(5px);
+        }
+
+        /* 密码强度指示器 */
+        .password-strength {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: width 0.5s ease, background 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .password-strength-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.8),
+            transparent);
+            animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .password-hint {
+            font-size: 0.85rem;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        /* 错误提示 */
+        .error-message {
+            color: var(--danger-color);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            height: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .links {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 3px;
+        }
+
+        .link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-color);
+            transition: width 0.3s ease;
+        }
+
+        .link:hover {
+            color: var(--secondary-color);
+        }
+
+        .link:hover::after {
+            width: 100%;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            color: var(--text-light);
+            font-size: 0.8rem;
+            opacity: 0.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .copyright a {
+            color: inherit;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .copyright a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* 波纹效果 */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.7);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 576px) {
+            .password-container {
+                padding: 2rem 1.5rem;
+                margin: 0 1rem;
+            }
+
+            .logo img {
+                width: 150px;
+            }
+        }
+
+        /* 加载动画 */
+        .loader {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 粒子背景容器 -->
+<div id="particles-js"></div>
+
+<div class="password-container">
+    <div class="logo">
+        <img src="../static/dist/js/1.png" alt="法律管理系统">
+    </div>
+
+    <form id="passwordForm">
+        <div class="form-group">
+            <label>当前用户</label>
+            <div class="input-wrapper">
+                <input type="text" id="currentUser" readonly value="正在获取用户信息...">
+                <span class="input-icon">👤</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="currentPassword">当前密码</label>
+            <div class="input-wrapper" id="currentPasswordWrapper">
+                <input type="password" id="currentPassword" name="current_password" placeholder="请输入当前密码" required>
+                <span class="password-toggle" id="toggleCurrentPassword">👁️</span>
+            </div>
+            <div class="error-message" id="currentPasswordError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="newPassword">新密码</label>
+            <div class="input-wrapper" id="newPasswordWrapper">
+                <input type="password" id="newPassword" name="new_password" placeholder="请输入新密码" required>
+                <span class="password-toggle" id="toggleNewPassword">👁️</span>
+            </div>
+            <div class="password-strength">
+                <div class="password-strength-bar" id="passwordStrengthBar"></div>
+            </div>
+            <div class="password-hint" id="passwordHint">密码强度: 弱</div>
+            <div class="error-message" id="newPasswordError"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmNewPassword">确认新密码</label>
+            <div class="input-wrapper" id="confirmPasswordWrapper">
+                <input type="password" id="confirmNewPassword" name="confirm_new_password" placeholder="请再次输入新密码" required>
+                <span class="password-toggle" id="toggleConfirmPassword">👁️</span>
+            </div>
+            <div class="error-message" id="confirmPasswordError"></div>
+        </div>
+
+        <button type="button" class="btn-change" id="changeBtn" onclick="submitForm()">
+            立即修改
+            <span class="icon">→</span>
+            <span class="loader" id="loader"></span>
+        </button>
+
+        <div class="links">
+            <a href="/" class="link">返回登录</a>
+        </div>
+    </form>
+
+    <div class="copyright">
+        © 2025 某某律师事务所 版权所有 | 备案号：XXX-XXXXXXX
+    </div>
+</div>
+
+<!-- 粒子效果库 -->
+<script src="https://unpkg.com/particles.js@2.0.0/particles.min.js"></script>
+
+<script>
+    // 初始化粒子效果
+    document.addEventListener('DOMContentLoaded', function() {
+        particlesJS('particles-js', {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#ffffff"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 2,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ffffff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1,
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+
+        // 获取当前用户信息
+        fetch('/get_admin_info')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('currentUser').value = data.data.username;
+                } else {
+                    document.getElementById('currentUser').value = "未登录用户";
+                    alert(data.message || '获取用户信息失败');
+                    window.location.href = '/'; // 跳转到登录页
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('currentUser').value = "获取用户信息失败";
+            });
+
+        // 输入框聚焦效果
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            const wrapper = input.parentElement;
+
+            input.addEventListener('focus', () => {
+                wrapper.classList.add('focused');
+            });
+
+            input.addEventListener('blur', () => {
+                wrapper.classList.remove('focused');
+            });
+        });
+
+        // 密码显示/隐藏切换
+        const toggleCurrentPassword = document.getElementById('toggleCurrentPassword');
+        const toggleNewPassword = document.getElementById('toggleNewPassword');
+        const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+        const currentPassword = document.getElementById('currentPassword');
+        const newPassword = document.getElementById('newPassword');
+        const confirmNewPassword = document.getElementById('confirmNewPassword');
+
+        toggleCurrentPassword.addEventListener('click', function() {
+            togglePasswordVisibility(currentPassword, toggleCurrentPassword);
+        });
+
+        toggleNewPassword.addEventListener('click', function() {
+            togglePasswordVisibility(newPassword, toggleNewPassword);
+        });
+
+        toggleConfirmPassword.addEventListener('click', function() {
+            togglePasswordVisibility(confirmNewPassword, toggleConfirmPassword);
+        });
+
+        function togglePasswordVisibility(input, toggle) {
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.textContent = '👁️';
+            } else {
+                input.type = 'password';
+                toggle.textContent = '👁️';
+            }
+        }
+
+        // 密码强度检测
+        newPassword.addEventListener('input', function() {
+            checkPasswordStrength(this.value);
+        });
+
+        function checkPasswordStrength(password) {
+            const strengthBar = document.getElementById('passwordStrengthBar');
+            const passwordHint = document.getElementById('passwordHint');
+
+            // 密码强度计算
+            let strength = 0;
+            if (password.length === 0) {
+                strength = 0;
+            } else if (password.length < 6) {
+                strength = 1;
+            } else {
+                // 长度加分
+                strength += Math.min(3, Math.floor(password.length / 3));
+
+                // 包含数字加分
+                if (/\d/.test(password)) strength += 1;
+
+                // 包含小写字母加分
+                if (/[a-z]/.test(password)) strength += 1;
+
+                // 包含大写字母加分
+                if (/[A-Z]/.test(password)) strength += 1;
+
+                // 包含特殊字符加分
+                if (/[^a-zA-Z0-9]/.test(password)) strength += 1;
+            }
+
+            // 限制最大强度为5
+            strength = Math.min(5, strength);
+
+            // 更新UI
+            const width = (strength / 5) * 100;
+            strengthBar.style.width = width + '%';
+
+            // 根据强度设置颜色和提示
+            if (strength <= 1) {
+                strengthBar.style.background = 'var(--danger-color)';
+                passwordHint.textContent = '密码强度: 非常弱';
+                passwordHint.style.color = 'var(--danger-color)';
+            } else if (strength <= 2) {
+                strengthBar.style.background = 'var(--warning-color)';
+                passwordHint.textContent = '密码强度: 弱';
+                passwordHint.style.color = 'var(--warning-color)';
+            } else if (strength <= 3) {
+                strengthBar.style.background = '#ffc107';
+                passwordHint.textContent = '密码强度: 中等';
+                passwordHint.style.color = '#ffc107';
+            } else if (strength <= 4) {
+                strengthBar.style.background = '#4caf50';
+                passwordHint.textContent = '密码强度: 强';
+                passwordHint.style.color = '#4caf50';
+            } else {
+                strengthBar.style.background = 'var(--success-color)';
+                passwordHint.textContent = '密码强度: 非常强';
+                passwordHint.style.color = 'var(--success-color)';
+            }
+        }
+
+        // 按钮波纹效果
+        const changeBtn = document.getElementById('changeBtn');
+        changeBtn.addEventListener('click', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+
+            this.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+
+    // 提交表单
+    function submitForm() {
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+        const changeBtn = document.getElementById('changeBtn');
+        const loader = document.getElementById('loader');
+
+        // 清除之前的错误提示
+        document.querySelectorAll('.error-message').forEach(el => {
+            el.textContent = '';
+        });
+
+        // 验证表单
+        let isValid = true;
+
+        if (!currentPassword) {
+            document.getElementById('currentPasswordError').textContent = '请输入当前密码';
+            isValid = false;
+            animateError(document.getElementById('currentPasswordWrapper'));
+        }
+
+        if (!newPassword) {
+            document.getElementById('newPasswordError').textContent = '请输入新密码';
+            isValid = false;
+            animateError(document.getElementById('newPasswordWrapper'));
+        } else if (newPassword.length < 6) {
+            document.getElementById('newPasswordError').textContent = '密码长度不能少于6位';
+            isValid = false;
+            animateError(document.getElementById('newPasswordWrapper'));
+        }
+
+        if (!confirmNewPassword) {
+            document.getElementById('confirmPasswordError').textContent = '请确认新密码';
+            isValid = false;
+            animateError(document.getElementById('confirmPasswordWrapper'));
+        } else if (newPassword !== confirmNewPassword) {
+            document.getElementById('confirmPasswordError').textContent = '两次输入的密码不一致';
+            isValid = false;
+            animateError(document.getElementById('confirmPasswordWrapper'));
+        }
+
+        if (!isValid) return;
+
+        // 显示加载动画
+        changeBtn.disabled = true;
+        loader.style.display = 'inline-block';
+        changeBtn.querySelector('.icon').style.display = 'none';
+
+        // 准备表单数据
+        const formData = {
+            current_password: currentPassword,
+            new_password: newPassword,
+            confirm_new_password: confirmNewPassword
+        };
+
+        // 发送请求
+        fetch('/administrator1', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    animateSuccess(() => {
+                        alert(data.message);
+                        window.location.href = '/';
+                    });
+                } else {
+                    animateError(document.getElementById('currentPasswordWrapper'));
+                    document.getElementById('currentPasswordError').textContent = data.message || '修改密码失败';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('currentPasswordError').textContent = '网络错误，请稍后再试';
+            })
+            .finally(() => {
+                changeBtn.disabled = false;
+                loader.style.display = 'none';
+                changeBtn.querySelector('.icon').style.display = 'inline-block';
+            });
+    }
+
+    // 成功动画
+    function animateSuccess(callback) {
+        const passwordContainer = document.querySelector('.password-container');
+        passwordContainer.style.animation = 'none';
+        void passwordContainer.offsetWidth; // 触发重绘
+        passwordContainer.style.animation = 'fadeInUp 0.5s ease-out';
+
+        passwordContainer.style.transform = 'scale(0.95)';
+        passwordContainer.style.boxShadow = '0 0 0 5px rgba(46, 204, 113, 0.5)';
+
+        setTimeout(() => {
+            passwordContainer.style.transform = 'scale(1)';
+            passwordContainer.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.3)';
+
+            if (callback) callback();
+        }, 300);
+    }
+
+    // 错误动画
+    function animateError(element) {
+        element.style.animation = 'none';
+        void element.offsetWidth; // 触发重绘
+
+        element.style.animation = 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both';
+
+        // 添加shake动画
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes shake {
+                10%, 90% { transform: translateX(-2px); }
+                20%, 80% { transform: translateX(4px); }
+                30%, 50%, 70% { transform: translateX(-6px); }
+                40%, 60% { transform: translateX(6px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        setTimeout(() => {
+            document.head.removeChild(style);
+        }, 500);
+    }
+</script>
+
+</body>
+</html>

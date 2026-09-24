@@ -1,0 +1,103 @@
+
+-Goal-
+Given a text document that is potentially relevant to this activity, first identify all entities needed from the text in order to capture the information and ideas in the text.
+Next, report all relationships among the identified entities.
+
+-Steps-
+1. Identify all entities. For each identified entity, extract the following information:
+- entity_name: Name of the entity, capitalized
+- entity_type: Suggest several labels or categories for the entity. The categories should not be specific, but should be as general as possible.
+- entity_description: Comprehensive description of the entity's attributes and activities
+Format each entity as ("entity"{tuple_delimiter}<entity_name>{tuple_delimiter}<entity_type>{tuple_delimiter}<entity_description>)
+
+2. From the entities identified in step 1, identify all pairs of (source_entity, target_entity) that are *clearly related* to each other.
+For each pair of related entities, extract the following information:
+- source_entity: name of the source entity, as identified in step 1
+- target_entity: name of the target entity, as identified in step 1
+- relationship_description: explanation as to why you think the source entity and the target entity are related to each other
+- relationship_strength: a numeric score indicating strength of the relationship between the source entity and target entity
+Format each relationship as ("relationship"{tuple_delimiter}<source_entity>{tuple_delimiter}<target_entity>{tuple_delimiter}<relationship_description>{tuple_delimiter}<relationship_strength>)
+
+3. Return output in Chinese as a single list of all the entities and relationships identified in steps 1 and 2. Use **{record_delimiter}** as the list delimiter.
+
+4. If you have to translate into Chinese, just translate the descriptions, nothing else!
+
+5. When finished, output {completion_delimiter}.
+
+-Examples-
+######################
+
+Example 1:
+
+text:
+罢免本单位选出的代表。
+
+第七十八条 全国人民代表大会和全国人民代表大会常务委员会的组织和工作程序由法律规定。
+
+### 第二节 中华人民共和国主席
+
+第七十九条 中华人民共和国主席、副主席由全国人民代表大会选举。
+
+有选举权和被选举权的年满四十五周岁的中华人民共和国公民可以被选为中华人民共和国主席、副主席。
+
+中华人民共和国主席、副主席每届任期同全国人民代表大会每届任期相同。
+
+
+------------------------
+output:
+("entity"{tuple_delimiter}全国人民代表大会{tuple_delimiter}ORGANIZATION{tuple_delimiter}全国人民代表大会是中华人民共和国最高国家权力机关)
+{record_delimiter}
+("entity"{tuple_delimiter}全国人民代表大会常务委员会{tuple_delimiter}ORGANIZATION{tuple_delimiter}全国人民代表大会常务委员会是全国人民代表大会的常设机构)
+{record_delimiter}
+("entity"{tuple_delimiter}中华人民共和国主席{tuple_delimiter}POSITION{tuple_delimiter}中华人民共和国主席是由全国人民代表大会选举产生的职位)
+{record_delimiter}
+("entity"{tuple_delimiter}中华人民共和国副主席{tuple_delimiter}POSITION{tuple_delimiter}中华人民共和国副主席是由全国人民代表大会选举产生的职位)
+{record_delimiter}
+("relationship"{tuple_delimiter}全国人民代表大会{tuple_delimiter}全国人民代表大会常务委员会{tuple_delimiter}全国人民代表大会常务委员会是全国人民代表大会的常设机构{tuple_delimiter}9)
+{record_delimiter}
+("relationship"{tuple_delimiter}全国人民代表大会{tuple_delimiter}中华人民共和国主席{tuple_delimiter}中华人民共和国主席由全国人民代表大会选举产生{tuple_delimiter}9)
+{record_delimiter}
+("relationship"{tuple_delimiter}全国人民代表大会{tuple_delimiter}中华人民共和国副主席{tuple_delimiter}中华人民共和国副主席由全国人民代表大会选举产生{tuple_delimiter}9)
+{completion_delimiter}
+#############################
+
+
+Example 2:
+
+text:
+业服务合同终止的，原物业服务人应当在约定期限或者合理期限内退出物业服务区域，将物业服务用房、相关设施、物业服务所必需的相关资料等交还给业主委员会、决定自行管理的业主或者其指定的人，配合新物业服务人做好交接工作，并如实告知物业的使用和管理状况。
+
+原物业服务人违反前款规定的，不得请求业主支付物业服务合同终止后的物业费；造成业主损失的，应当赔偿损失。
+
+第九百五十条 物业服务合同终止后，在业主或者业主大会选聘
+------------------------
+output:
+("entity"{tuple_delimiter}原物业服务人{tuple_delimiter}ORGANIZATION{tuple_delimiter}提供物业管理服务的主体，在合同终止时需要退出并移交相关资料)
+{record_delimiter}
+("entity"{tuple_delimiter}业主委员会{tuple_delimiter}ORGANIZATION{tuple_delimiter}代表业主利益的组织，负责接收物业服务用房及相关资料)
+{record_delimiter}
+("entity"{tuple_delimiter}业主{tuple_delimiter}PERSON{tuple_delimiter}拥有物业的个人或团体，有权选择新的物业服务人)
+{record_delimiter}
+("entity"{tuple_delimiter}物业服务区域{tuple_delimiter}GEO{tuple_delimiter}物业服务人提供服务的地理区域)
+{record_delimiter}
+("entity"{tuple_delimiter}物业服务合同{tuple_delimiter}CONTRACT{tuple_delimiter}规定物业服务人与业主之间权利义务关系的法律文件)
+{record_delimiter}
+("entity"{tuple_delimiter}新物业服务人{tuple_delimiter}ORGANIZATION{tuple_delimiter}接替原物业服务人的新物业管理服务主体)
+{record_delimiter}
+("relationship"{tuple_delimiter}原物业服务人{tuple_delimiter}业主委员会{tuple_delimiter}原物业服务人在合同终止后需向业主委员会移交相关资料{tuple_delimiter}6)
+{record_delimiter}
+("relationship"{tuple_delimiter}原物业服务人{tuple_delimiter}业主{tuple_delimiter}原物业服务人需向业主移交相关资料并告知物业状况{tuple_delimiter}6)
+{record_delimiter}
+("relationship"{tuple_delimiter}原物业服务人{tuple_delimiter}新物业服务人{tuple_delimiter}原物业服务人需配合新物业服务人完成交接工作{tuple_delimiter}7)
+{record_delimiter}
+("relationship"{tuple_delimiter}原物业服务人{tuple_delimiter}物业服务合同{tuple_delimiter}原物业服务人与业主之间的合同关系因合同终止而解除{tuple_delimiter}8)
+{completion_delimiter}
+#############################
+
+
+
+-Real Data-
+######################
+text: {input_text}
+######################
+output:

@@ -1,0 +1,33 @@
+# ===== 密钥与本地配置 =====
+.env
+.env.*
+!.env.example
+*.local
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# ===== Node / 前端构建产物 =====
+node_modules/
+frontend/dist/
+# 注：services/{auth,compliance}/static/dist/{index.html,assets} 是运行期必需的
+# 前端构建产物，由 scripts/build_frontend.sh 重新生成，仍保留在版本库中。
+
+# ===== GraphRAG / one-api 运行时数据（体积大，运行时生成）=====
+services/qa/oneapi/
+services/qa/ragtest/inputs/artifacts/
+services/qa/ragtest/input/
+services/qa/ragtest/import/
+services/qa/ragtest/cache/
+services/qa/ragtest/output/
+
+# ===== IDE / 系统 / 日志 =====
+.idea/
+.vscode/
+.DS_Store
+*.log
+logs/

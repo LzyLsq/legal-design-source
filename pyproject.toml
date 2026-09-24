@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lawdesign-shared"
+version = "1.0.0"
+description = "LawDesign 法律智能体平台公共库（配置 / 路径 / 安全 / Web 脚手架）"
+requires-python = ">=3.10"
+dependencies = [
+    "flask>=3.0",
+    "flask-cors>=4.0",
+    "PyMySQL>=1.1",
+]
+
+[project.optional-dependencies]
+# GraphRAG 检索问答模块依赖较重，按需安装：pip install -e ".[qa]"
+qa = ["graphrag==0.3.0", "pandas>=2.2", "tiktoken>=0.7", "lancedb>=0.5", "pyarrow>=15"]
+
+[tool.setuptools]
+packages = ["shared"]
+
+[tool.setuptools.package-data]
+shared = ["py.typed"]

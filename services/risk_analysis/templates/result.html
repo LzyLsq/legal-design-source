@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>风险评估结果</title>
+    <style>
+        :root {
+            --primary-color: #BF5700;
+            --secondary-color: #D4A017;
+            --accent-color: #C41E3A;
+            --background-color: #FFF8E7;
+            --form-bg-color: rgba(255, 255, 255, 0.9);
+            --input-border-color: #E8D6B5;
+            --input-focus-border-color: var(--primary-color);
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(152deg, #f4f2ee 0%, #e0d6c8 100%);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 增加装饰元素 */
+        .decoration {
+            position: fixed;
+            opacity: 0.05;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .decoration.gavel {
+            left: 5%;
+            top: 15%;
+            width: 100px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .decoration.contract {
+            right: 5%;
+            bottom: 15%;
+            width: 80px;
+            animation: float 5s ease-in-out infinite 1s;
+        }
+
+        .decoration.law-book {
+            left: 15%;
+            bottom: 10%;
+            width: 70px;
+            animation: rotate 15s linear infinite;
+        }
+
+        .decoration.stamp {
+            right: 15%;
+            top: 20%;
+            width: 60px;
+            animation: float 7s ease-in-out infinite 2s;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--secondary-color);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+
+        .result-container {
+            background:
+                    linear-gradient(to bottom right, var(--form-bg-color) 0%, rgba(255, 251, 240, 0.9) 100%),
+                    url('data:image/png;base64,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');
+            background-blend-mode: multiply;
+            border: 1px solid rgba(191, 87, 0, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .result-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .risk-index {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .risk-level {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .low-risk {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .medium-risk {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .high-risk {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .risk-explanation {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--input-border-color);
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary-color), #34495e);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            margin: 10px auto;
+            display: block;
+            width: 200px;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg,
+            transparent 25%,
+            rgba(255, 255, 255, 0.15) 50%,
+            transparent 75%);
+            transform: rotate(45deg);
+            animation: btnShine 3s infinite linear;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes btnShine {
+            0% {
+                background-position: -100px;
+            }
+
+            100% {
+                background-position: 100px;
+            }
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+<!-- 增加装饰元素 -->
+<div class="decoration gavel">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--primary-color)">
+        <path d="M12 2L9 5l3 3 3-3-3-3zm0 18l-3-3 3-3 3 3-3 3zm8-8h-5v-2h5v2zm-5-4h5V6h-5v2zM4 11h5V9H4v2zm5 4H4v2h5v-2z" />
+    </svg>
+</div>
+<div class="decoration contract">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--secondary-color)">
+        <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zm-9-1l-4-4 1.4-1.4 2.6 2.6 5.6-5.6L18 13l-7 7z" />
+    </svg>
+</div>
+<div class="decoration law-book">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--primary-color)">
+        <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-2c.83 0 1.5-.67 1.5-1.5S7.33 11 6.5 11 5 11.67 5 12.5 5.67 14 6.5 14zm6.5 0c.83 0 1.5-.67 1.5-1.5S13.83 11 13 11 11.5 11.67 11.5 12.5 12.17 14 13 14zm6.5 0c.83 0 1.5-.67 1.5-1.5S19.83 11 19 11 17.5 11.67 17.5 12.5 18.17 14 19 14z" />
+    </svg>
+</div>
+<div class="decoration stamp">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--accent-color)">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-2c.83 0 1.5-.67 1.5-1.5S7.33 11 6.5 11 5 11.67 5 12.5 5.67 14 6.5 14zm6.5 0c.83 0 1.5-.67 1.5-1.5S13.83 11 13 11 11.5 11.67 11.5 12.5 12.17 14 13 14zm6.5 0c.83 0 1.5-.67 1.5-1.5S19.83 11 19 11 17.5 11.67 17.5 12.5 18.17 14 19 14z" />
+    </svg>
+</div>
+
+<h1>风险评估结果</h1>
+<div class="result-container">
+    <div class="risk-index">
+        风险指数：{{ session['risk_index'] }}
+    </div>
+    <div class="risk-level {% if session['risk_level'] == '低风险' %}low-risk{% elif session['risk_level'] == '中风险' %}medium-risk{% else %}high-risk{% endif %}">
+        {{ session['risk_level'] }}
+    </div>
+    <div class="risk-explanation">
+        {% if session['risk_level'] == '低风险' %}
+        <h3>风险说明</h3>
+        <p>该合同的风险较低，表明其条款和条件相对较为有利，风险可控。</p>
+        <p>建议：可以正常推进合同签订和执行，但仍需关注合同履行过程中的细节，确保双方履行义务。</p>
+        {% elif session['risk_level'] == '中风险' %}
+        <h3>风险说明</h3>
+        <p>该合同的风险处于中等水平，表明存在一定的不确定性和潜在风险。</p>
+        <p>建议：在签订和执行合同前，建议对合同条款进行详细审查，特别是付款方式、履行期限、违约责任等关键条款。同时，建议对合作方的信用状况进行进一步核实。</p>
+        {% else %}
+        <h3>风险说明</h3>
+        <p>该合同的风险较高，表明其条款和条件可能存在较大的不确定性和潜在风险。</p>
+        <p>建议：在签订合同前，务必对合同条款进行严格审查，并寻求法律和财务顾问的意见。同时，建议对合作方的信用状况、市场行情和行业趋势进行深入分析，以降低潜在风险。</p>
+        {% endif %}
+    </div>
+</div>
+<button onclick="deleteTempOnNav('http://127.0.0.1:5025')">诉讼模板</button>
+<button onclick="deleteTempOnNav('http://127.0.0.1:5006')">案例分析</button>
+<button onclick="deleteTempOnNav('/')">返回</button>
+
+<script>
+    // 检查链接合法性
+    function checkUrlValidity(url) {
+        try {
+            const parser = document.createElement('a');
+            parser.href = url;
+            return parser.hostname && parser.pathname;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    // 处理链接点击
+    function deleteTempOnNav(url) {
+        if (!checkUrlValidity(url)) {
+            alert('链接不合法，请检查链接地址');
+            return;
+        }
+
+        // 这里可以添加删除临时文件的逻辑
+        // deleteTempFile(tempFile);
+
+        window.location.href = url;
+    }
+
+    // 添加按钮悬停效果
+    document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px)';
+            this.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+        });
+
+        button.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'none';
+        });
+    });
+</script>
+</body>
+</html>

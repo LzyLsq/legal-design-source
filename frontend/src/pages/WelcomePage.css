@@ -1,0 +1,254 @@
+/* WelcomePage.css */
+.legal-platform-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(
+          152deg,
+          #f4f2ee 0%,
+          #e0d6c8 100%
+  );
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 量子粒子效果 */
+.quantum-particle {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(
+          circle at var(--x) var(--y),
+          rgba(150, 130, 100, 0.08) 0%,
+          transparent 70%
+  );
+  filter: blur(40px);
+  pointer-events: none;
+  animation: quantum-fluctuation 25s linear infinite;
+}
+
+@keyframes quantum-fluctuation {
+  0% { transform: translate(0,0) scale(1); opacity: 0.8; }
+  33% { transform: translate(50px, 30px) scale(1.2); opacity: 0.6; }
+  66% { transform: translate(-30px, 50px) scale(0.8); opacity: 1; }
+  100% { transform: translate(0,0) scale(1); opacity: 0.8; }
+}
+
+/* 全息投影内容 */
+.holographic-content {
+  text-align: center;
+  max-width: 1600px; /* 增加容器宽度 */
+  padding: 4rem; /* 增加内边距 */
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(150, 130, 100, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 标题光晕效果 */
+.platform-title {
+  font-size: 3rem; /* 增大标题字号 */
+  font-weight: 600;
+  color: #3a3a3a;
+  margin-bottom: 2rem; /* 增加下边距 */
+  position: relative;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120%;
+  height: 150%;
+  background: radial-gradient(
+          circle,
+          rgba(150, 130, 100, 0.1) 0%,
+          transparent 60%
+  );
+  animation: aura-pulse 4s ease infinite;
+}
+
+@keyframes aura-pulse {
+  0%, 100% { opacity: 0.8; filter: blur(20px); }
+  50% { opacity: 0.4; filter: blur(30px); }
+}
+
+/* 服务卡片矩阵 */
+.service-matrix {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(333px, 1fr)); /* 增加列宽 */
+  gap: 1rem; /* 增大间距 */
+  margin-top: 3rem; /* 增加顶部间距 */
+  max-width: 1400px; /* 增大最大宽度 */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 服务卡片样式 */
+.service-card {
+  perspective: 1500px; /* 增大透视值 */
+  min-height: 300px; /* 增加卡片高度 */
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+  border-radius: 20px; /* 增大圆角 */
+  overflow: hidden;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  box-shadow: 0 16px 32px rgba(150, 130, 100, 0.15); /* 增大阴影 */
+}
+
+.service-card:hover .card-inner {
+  transform: rotateY(180deg);
+}
+
+/* 正反面公共样式 */
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 20px; /* 同步圆角 */
+  padding: 2.5rem; /* 增加内边距 */
+  background: linear-gradient(45deg, #ffffff, #f9f6f2);
+}
+
+/* 背面样式 */
+.card-back {
+  transform: rotateY(180deg);
+  display: flex;
+  align-items: center;
+  background: linear-gradient(45deg, #f9f6f2, #ffffff);
+}
+
+/* 卡片内容 */
+.card-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  font-size: 1.3rem; /* 增大字体 */
+}
+
+.dynamic-icon {
+  font-size: 4rem; /* 增大图标 */
+  margin-bottom: 2rem; /* 增加下边距 */
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3)); /* 加强阴影 */
+}
+
+.service-card:hover .dynamic-icon {
+  transform: rotate(15deg) scale(1.3); /* 增强悬停效果 */
+}
+
+.card-divider {
+  width: 80px; /* 增加初始宽度 */
+  height: 3px; /* 增加高度 */
+  background: linear-gradient(90deg, #968264, #c4a86a);
+  margin: 2rem auto; /* 增加外边距 */
+  transition: all 0.3s ease;
+}
+
+.service-card:hover .card-divider {
+  width: 120px; /* 增大悬停宽度 */
+}
+
+/* 背面描述 */
+.card-desc {
+  font-size: 1.3rem; /* 增大描述文字 */
+  line-height: 1.7;
+  color: #5a4a42;
+  margin: 0;
+  padding: 1.5rem; /* 增加内边距 */
+  position: relative;
+  z-index: 1;
+}
+
+.legal-stamp {
+  position: absolute;
+  bottom: 2rem; /* 调整位置 */
+  right: 2rem;
+  font-size: 0.9rem; /* 增大字号 */
+  color: #968264;
+  opacity: 0.8;
+  transform: rotate(10deg);
+}
+
+/* 响应式优化 */
+@media (max-width: 1280px) {
+  .service-matrix {
+    grid-template-columns: repeat(2, 1fr); /* 中等屏幕显示2列 */
+    max-width: 900px;
+  }
+}
+
+@media (max-width: 768px) {
+  .holographic-content {
+    max-width: 95%;
+    padding: 2rem;
+  }
+
+  .platform-title {
+    font-size: 2.4rem;
+  }
+
+  .service-matrix {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    gap: 1.5rem;
+  }
+
+  .service-card {
+    min-height: 300px; /* 移动端保持较大高度 */
+  }
+
+  .card-content {
+    font-size: 1.1rem;
+  }
+
+  .dynamic-icon {
+    font-size: 3.5rem;
+  }
+
+  .card-desc {
+    font-size: 1.1rem;
+    padding: 1rem;
+  }
+
+  .legal-stamp {
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .holographic-content {
+    padding: 1.5rem;
+  }
+
+  .platform-title {
+    font-size: 2rem;
+  }
+
+  .service-card {
+    min-height: 280px;
+  }
+
+  .card-front,
+  .card-back {
+    padding: 2rem;
+  }
+}

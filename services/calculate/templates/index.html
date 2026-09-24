@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>法律智能计算器</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #d4af37;
+            --accent-color: #c0392b;
+            --light-bg: #f8f9fa;
+            --dark-bg: #e9ecef;
+            --gradient-start: #2c3e50;
+            --gradient-end: #34495e;
+            --gold-light: #ffd700;
+            --gold-dark: #b8860b;
+        }
+
+        /* 背景和基本样式 */
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(45deg, var(--light-bg) 0%, var(--dark-bg) 100%);
+            color: #333;
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.5s ease;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* 导航栏 */
+        nav {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        /* 主标题 */
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.8s ease;
+            text-align: center;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+        }
+
+        /* 卡片样式 */
+        .calculator-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+            width: auto;
+            max-width: 800px;
+            margin: 1.5rem auto;
+            animation: fadeIn 0.5s ease;
+            position: relative;
+        }
+
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .calculator-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* 卡片头部 */
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--gradient-end));
+            color: white;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 15px 15px 0 0 !important;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .card-header:hover {
+            background: linear-gradient(135deg, var(--gradient-end), var(--primary-color));
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+        }
+
+        .card-header i {
+            animation: pulse 2s infinite;
+            margin-right: 0.5rem;
+        }
+
+        /* 表单样式 */
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .form-label::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gold-light), transparent);
+        }
+
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: all 0.3s;
+            padding: 0.5rem 1rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        /* 按钮样式 */
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-primary:hover::before {
+            opacity: 1;
+        }
+
+        /* 结果显示 */
+        .result-display {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 8px;
+            position: relative;
+            animation: fadeIn 0.5s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-display::before {
+            content: "✓";
+            color: var(--secondary-color);
+            margin-right: 0.5rem;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        .error-display {
+            color: var(--accent-color);
+            border-left: 4px solid var(--accent-color);
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border-radius: 8px;
+            background: #f8d7da;
+            animation: shake 0.4s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 加载动画 */
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--secondary-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        /* 装饰元素 */
+        .law-decoration {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .gavel {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232c3e50"><path d="M12 2L9 5l3 3 3-3-3-3zm0 18l-3-3 3-3 3 3-3 3zm8-8h-5v-3h5v3zm-5-4h5V6h-5v2zM4 11h5V9H4v2zm5 4H4v2h5v-2z"/></svg>');
+            top: 20%;
+            left: 10%;
+        }
+
+        .book {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23d4af37"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S.55 4.9 0 6v14c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-3h12v3c0 .55.45 1 1 1h3c.55 0 1-.45 1-1V6c-.55-.8-1.45-1.2-2.5-1.2zM12 19H4v-3h8v3zm0-5H4v-3h8v3zm8-8h-5v-3h5v3zm-5-4h5V6h-5v2zM4 11h5V9H4v2zm5 4H4v2h5v-2z"/></svg>');
+            bottom: 30%;
+            right: 15%;
+            animation-delay: 1s;
+        }
+
+        /* 滚动指示器 */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.7;
+        }
+
+        .scroll-indicator span {
+            display: block;
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--secondary-color);
+            border-radius: 50%;
+            margin-bottom: 8px;
+            animation: bounce 2s infinite;
+        }
+
+        /* 动画效果 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(12px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 金色特效 */
+        .gold-effect {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gold-effect::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .gold-effect:hover::before {
+            background: radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+        }
+
+        .gold-border {
+            border: 1px solid transparent;
+            border-image: linear-gradient(to right, transparent, var(--gold-light), transparent) 1;
+        }
+
+        .gold-shadow {
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+        }
+
+        .gold-shadow:hover {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .gold-glow {
+            position: relative;
+        }
+
+        .gold-glow::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            z-index: -1;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color), var(--gradient-end));
+            color: white;
+            padding: 2rem 1rem;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .sidebar-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu li:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-menu li.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover {
+            color: var(--gold-light);
+        }
+
+        .sidebar-menu i {
+            margin-right: 0.5rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .content-wrapper {
+            padding: 2rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+        }
+
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 101;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+
+        /* 返回主页按钮 */
+        .home-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--primary-color), var(--gradient-end));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulse 3s infinite;
+        }
+
+        .home-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 卡片内容 */
+        .card-content {
+            padding: 1.2rem;
+            overflow-y: auto;
+        }
+
+        .card-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .card-content::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        /* 表单布局 */
+        .card-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .card-form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .card-form-col {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .card-form-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* 隐藏所有卡片，只显示选中的 */
+        .calculator-card {
+            display: none;
+        }
+
+        .calculator-card.active {
+            display: block;
+        }
+
+        /* 按钮悬停效果 */
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            color: white;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        /* 输入框聚焦效果 */
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* 卡片切换动画 */
+        .calculator-card {
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* 背景渐变动画 */
+        body {
+            animation: bgShift 15s ease-in-out infinite;
+        }
+
+        @keyframes bgShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 滚动条动画 */
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            border-radius: 4px;
+        }
+
+        /* 按钮加载效果 */
+        .btn-loading {
+            position: relative;
+        }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-top-color: var(--secondary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-loading.active::after {
+            opacity: 1;
+        }
+
+        /* 卡片内容悬停效果 */
+        .card-form-row:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        /* 输入框验证效果 */
+        .form-control.valid {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .form-control.invalid {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.2);
+        }
+
+        /* 按钮点击效果 */
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        /* 返回按钮动画 */
+        .home-button {
+            animation: pulse 3s infinite;
+        }
+
+        /* 卡片头部图标动画 */
+        .card-header i {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+
+<body>
+<div class="background-overlay"></div>
+
+<!-- 返回主页按钮 -->
+<button class="home-button gold-effect" id="homeButton"
+        onclick="window.location.href='http://127.0.0.1:5000/dashboard';">
+    <i class="bi bi-house-door"></i>
+</button>
+
+<!-- 侧边栏导航 -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h2 class="gold-effect">法律智能计算器</h2>
+        <p class="small">选择计算器类型</p>
+    </div>
+    <ul class="sidebar-menu">
+        <li class="active" onclick="switchCalculator('interest')">
+            <a href="#"><i class="bi bi-currency-exchange"></i> 利息计算</a>
+        </li>
+        <li onclick="switchCalculator('breach')">
+            <a href="#"><i class="bi bi-x-octagon"></i> 违约金计算</a>
+        </li>
+        <li onclick="switchCalculator('lawsuit')">
+            <a href="#"><i class="bi bi-justify"></i> 诉讼费计算</a>
+        </li>
+        <li onclick="switchCalculator('delay')">
+            <a href="#"><i class="bi bi-hourglass-split"></i> 迟延履行利息</a>
+        </li>
+        <li onclick="switchCalculator('execution')">
+            <a href="#"><i class="bi bi-briefcase"></i> 执行费计算</a>
+        </li>
+        <li onclick="switchCalculator('preservation')">
+            <a href="#"><i class="bi bi-shield-lock"></i> 财产保全费</a>
+        </li>
+        <li onclick="switchCalculator('compensation')">
+            <a href="#"><i class="bi bi-cash-coin"></i> 赔偿金计算</a>
+        </li>
+        <li onclick="switchCalculator('childSupport')">
+            <a href="#"><i class="bi bi-people"></i> 抚养费计算</a>
+        </li>
+        <li onclick="switchCalculator('depositPenalty')">
+            <a href="#"><i class="bi bi-currency-dollar"></i> 定金罚则计算</a>
+        </li>
+        <li onclick="switchCalculator('workInjury')">
+            <a href="#"><i class="bi bi-bandaid"></i> 工伤赔偿计算</a>
+        </li>
+        <li onclick="switchCalculator('trafficAccident')">
+            <a href="#"><i class="bi bi-car-crash"></i> 交通事故赔偿计算</a>
+        </li>
+        <li onclick="switchCalculator('intellectualProperty')">
+            <a href="#"><i class="bi bi-lightbulb"></i> 知识产权赔偿计算</a>
+        </li>
+        <li onclick="switchCalculator('companyLiquidation')">
+            <a href="#"><i class="bi bi-building"></i> 公司清算费用计算</a>
+        </li>
+    </ul>
+</div>
+
+<!-- 主内容区域 -->
+<div class="main-content">
+    <div class="content-wrapper">
+        <h1 class="text-center mb-5 display-5 fw-bold gold-effect">法律智能计算器</h1>
+
+        <!-- 利息计算 -->
+        <div class="card calculator-card active gold-effect" id="interestCard">
+            <div class="card-header gold-border">
+                <i class="bi bi-currency-exchange me-2"></i> 利息计算
+            </div>
+            <div class="card-content gold-shadow">
+                <div class="card-form">
+                    <div class="card-form-row">
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="principal" class="form-label fw-bold">本金</label>
+                                <input type="number" class="form-control gold-effect" id="principal" placeholder="请输入本金金额，例如：100000" min="0">
+                            </div>
+                        </div>
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label class="form-label fw-bold">利率选择</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="rateType" id="fixedRate" value="fixed" checked onchange="toggleRateInput()">
+                                    <label class="form-check-label fw-bold" for="fixedRate">固定利率</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="rateType" id="lprRate" value="lpr" onchange="toggleRateInput()">
+                                    <label class="form-check-label fw-bold" for="lprRate">LPR利率</label>
+                                </div>
+                                <input type="number" class="form-control mt-2 gold-effect" id="rate" placeholder="请输入利率（%）" min="0">
+                                <button class="btn btn-sm btn-light mt-2 w-100 gold-effect" onclick="fetchLPR()">
+                                    <i class="bi bi-arrow-down-square"></i> 获取最新LPR
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-form-row">
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="period" class="form-label fw-bold">期限（年）</label>
+                                <input type="number" class="form-control gold-effect" id="period" placeholder="请输入期限" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-form-actions">
+                        <button class="btn btn-primary gold-effect btn-loading" onclick="calculateInterest()">
+                            <i class="bi bi-calculator me-2"></i> 计算
+                        </button>
+                        <div class="loading mt-3" id="interestLoading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-display mt-3 gold-effect" id="interestResult"></div>
+                        <div class="error-display mt-3" id="interestError"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 违约金计算 -->
+        <div class="card calculator-card gold-effect" id="breachCard">
+            <div class="card-header gold-border">
+                <i class="bi bi-x-octagon me-2"></i> 违约金计算
+            </div>
+            <div class="card-content gold-shadow">
+                <div class="card-form">
+                    <div class="card-form-row">
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="breachPrincipal" class="form-label fw-bold">本金</label>
+                                <input type="number" class="form-control gold-effect" id="breachPrincipal" placeholder="请输入本金金额" min="0">
+                            </div>
+                        </div>
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="breachRate" class="form-label fw-bold">违约率（%）</label>
+                                <input type="number" class="form-control gold-effect" id="breachRate" placeholder="请输入违约率" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-form-actions">
+                        <button class="btn btn-primary gold-effect" onclick="calculateLiquidatedDamages()">
+                            <i class="bi bi-calculator me-2"></i> 计算
+                        </button>
+                        <div class="loading mt-3" id="breachLoading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-display mt-3 gold-effect" id="breachResult"></div>
+                        <div class="error-display mt-3" id="breachError"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 诉讼费计算 -->
+        <div class="card calculator-card gold-effect" id="lawsuitCard">
+            <div class="card-header gold-border">
+                <i class="bi bi-justify me-2"></i> 诉讼费计算
+            </div>
+            <div class="card-content gold-shadow">
+                <div class="card-form">
+                    <div class="card-form-row">
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="lawsuitAmount" class="form-label fw-bold">诉讼请求金额</label>
+                                <input type="number" class="form-control gold-effect" id="lawsuitAmount" placeholder="请输入诉讼请求金额" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-form-actions">
+                        <button class="btn btn-primary gold-effect" onclick="calculateLawsuitFee()">
+                            <i class="bi bi-calculator me-2"></i> 计算
+                        </button>
+                        <div class="loading mt-3" id="lawsuitLoading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-display mt-3 gold-effect" id="lawsuitResult"></div>
+                        <div class="error-display mt-3" id="lawsuitError"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 迟延履行利息 -->
+        <div class="card calculator-card gold-effect" id="delayCard">
+            <div class="card-header gold-border">
+                <i class="bi bi-hourglass-split me-2"></i> 迟延履行利息
+            </div>
+            <div class="card-content gold-shadow">
+                <div class="card-form">
+                    <div class="card-form-row">
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="delayPrincipal" class="form-label fw-bold">本金</label>
+                                <input type="number" class="form-control gold-effect" id="delayPrincipal" placeholder="请输入本金金额" min="0">
+                            </div>
+                        </div>
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="delayDays" class="form-label fw-bold">迟延天数</label>
+                                <input type="number" class="form-control gold-effect" id="delayDays" placeholder="请输入迟延天数" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-form-actions">
+                        <button class="btn btn-primary gold-effect" onclick="calculateDelayedInterest()">
+                            <i class="bi bi-calculator me-2"></i> 计算
+                        </button>
+                        <div class="loading mt-3" id="delayLoading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-display mt-3 gold-effect" id="delayResult"></div>
+                        <div class="error-display mt-3" id="delayError"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 执行费计算 -->
+        <div class="card calculator-card gold-effect" id="executionCard">
+            <div class="card-header gold-border">
+                <i class="bi bi-briefcase me-2"></i> 执行费计算
+            </div>
+            <div class="card-content gold-shadow">
+                <div class="card-form">
+                    <div class="card-form-row">
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="executionAmount" class="form-label fw-bold">执行金额</label>
+                                <input type="number" class="form-control gold-effect" id="executionAmount" placeholder="请输入执行金额" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-form-actions">
+                        <button class="btn btn-primary gold-effect" onclick="calculateExecutionFee()">
+                            <i class="bi bi-calculator me-2"></i> 计算
+                        </button>
+                        <div class="loading mt-3" id="executionLoading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-display mt-3 gold-effect" id="executionResult"></div>
+                        <div class="error-display mt-3" id="executionError"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 财产保全费计算 -->
+        <div class="card calculator-card gold-effect" id="preservationCard">
+            <div class="card-header gold-border">
+                <i class="bi bi-shield-lock me-2"></i> 财产保全费
+            </div>
+            <div class="card-content gold-shadow">
+                <div class="card-form">
+                    <div class="card-form-row">
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="preservationAmount" class="form-label fw-bold">财产保全金额</label>
+                                <input type="number" class="form-control gold-effect" id="preservationAmount" placeholder="请输入财产保全金额" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-form-actions">
+                        <button class="btn btn-primary gold-effect" onclick="calculatePreservationFee()">
+                            <i class="bi bi-calculator me-2"></i> 计算
+                        </button>
+                        <div class="loading mt-3" id="preservationLoading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-display mt-3 gold-effect" id="preservationResult"></div>
+                        <div class="error-display mt-3" id="preservationError"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 赔偿金计算 -->
+        <div class="card calculator-card gold-effect" id="compensationCard">
+            <div class="card-header gold-border">
+                <i class="bi bi-cash-coin me-2"></i> 赔偿金计算
+            </div>
+            <div class="card-content gold-shadow">
+                <div class="card-form">
+                    <div class="card-form-row">
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="actualLoss" class="form-label fw-bold">实际损失</label>
+                                <input type="number" class="form-control gold-effect" id="actualLoss" placeholder="请输入实际损失金额" min="0">
+                            </div>
+                        </div>
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="mentalDamage" class="form-label fw-bold">精神损害赔偿</label>
+                                <input type="number" class="form-control gold-effect" id="mentalDamage" placeholder="请输入精神损害赔偿金额" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-form-actions">
+                        <button class="btn btn-primary gold-effect" onclick="calculateCompensation()">
+                            <i class="bi bi-calculator me-2"></i> 计算
+                        </button>
+                        <div class="loading mt-3" id="compensationLoading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-display mt-3 gold-effect" id="compensationResult"></div>
+                        <div class="error-display mt-3" id="compensationError"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 抚养费计算 -->
+        <div class="card calculator-card gold-effect" id="childSupportCard">
+            <div class="card-header gold-border">
+                <i class="bi bi-people me-2"></i> 抚养费计算
+            </div>
+            <div class="card-content gold-shadow">
+                <div class="card-form">
+                    <div class="card-form-row">
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="income" class="form-label fw-bold">收入</label>
+                                <input type="number" class="form-control gold-effect" id="income" placeholder="请输入收入金额" min="0">
+                            </div>
+                        </div>
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="children" class="form-label fw-bold">子女数量</label>
+                                <input type="number" class="form-control gold-effect" id="children" placeholder="请输入子女数量" value="1" min="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-form-actions">
+                        <button class="btn btn-primary gold-effect" onclick="calculateChildSupport()">
+                            <i class="bi bi-calculator me-2"></i> 计算
+                        </button>
+                        <div class="loading mt-3" id="childSupportLoading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-display mt-3 gold-effect" id="childSupportResult"></div>
+                        <div class="error-display mt-3" id="childSupportError"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 合同定金罚则计算 -->
+        <div class="card calculator-card gold-effect" id="depositPenaltyCard">
+            <div class="card-header gold-border">
+                <i class="bi bi-currency-dollar me-2"></i> 定金罚则计算
+            </div>
+            <div class="card-content gold-shadow">
+                <div class="card-form">
+                    <div class="card-form-row">
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="depositAmount" class="form-label fw-bold">定金金额</label>
+                                <input type="number" class="form-control gold-effect" id="depositAmount" placeholder="请输入定金金额" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-form-actions">
+                        <button class="btn btn-primary gold-effect" onclick="calculateDepositPenalty()">
+                            <i class="bi bi-calculator me-2"></i> 计算
+                        </button>
+                        <div class="loading mt-3" id="depositPenaltyLoading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-display mt-3 gold-effect" id="depositPenaltyResult"></div>
+                        <div class="error-display mt-3" id="depositPenaltyError"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 工伤赔偿计算 -->
+        <div class="card calculator-card gold-effect" id="workInjuryCard">
+            <div class="card-header gold-border">
+                <i class="bi bi-bandaid me-2"></i> 工伤赔偿计算
+            </div>
+            <div class="card-content gold-shadow">
+                <div class="card-form">
+                    <div class="card-form-row">
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="injuryLevel" class="form-label fw-bold">工伤等级</label>
+                                <select class="form-select gold-effect" id="injuryLevel">
+                                    <option value="1">一级</option>
+                                    <option value="2">二级</option>
+                                    <option value="3">三级</option>
+                                    <option value="4">四级</option>
+                                    <option value="5">五级</option>
+                                    <option value="6">六级</option>
+                                    <option value="7">七级</option>
+                                    <option value="8">八级</option>
+                                    <option value="9">九级</option>
+                                    <option value="10">十级</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="monthlySalary" class="form-label fw-bold">月工资（元）</label>
+                                <input type="number" class="form-control gold-effect" id="monthlySalary" placeholder="请输入月工资" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-form-actions">
+                        <button class="btn btn-primary gold-effect" onclick="calculateWorkInjury()">
+                            <i class="bi bi-calculator me-2"></i> 计算
+                        </button>
+                        <div class="loading mt-3" id="workInjuryLoading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-display mt-3 gold-effect" id="workInjuryResult"></div>
+                        <div class="error-display mt-3" id="workInjuryError"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 交通事故赔偿计算 -->
+        <div class="card calculator-card gold-effect" id="trafficAccidentCard">
+            <div class="card-header gold-border">
+                <i class="bi bi-car-crash me-2"></i> 交通事故赔偿计算
+            </div>
+            <div class="card-content gold-shadow">
+                <div class="card-form">
+                    <div class="card-form-row">
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="liabilityPercentage" class="form-label fw-bold">责任比例（%）</label>
+                                <input type="number" class="form-control gold-effect" id="liabilityPercentage" placeholder="请输入责任比例" min="0" max="100">
+                            </div>
+                        </div>
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="totalLoss" class="form-label fw-bold">总损失（元）</label>
+                                <input type="number" class="form-control gold-effect" id="totalLoss" placeholder="请输入总损失" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-form-actions">
+                        <button class="btn btn-primary gold-effect" onclick="calculateTrafficAccident()">
+                            <i class="bi bi-calculator me-2"></i> 计算
+                        </button>
+                        <div class="loading mt-3" id="trafficAccidentLoading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-display mt-3 gold-effect" id="trafficAccidentResult"></div>
+                        <div class="error-display mt-3" id="trafficAccidentError"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 知识产权赔偿计算 -->
+        <div class="card calculator-card gold-effect" id="intellectualPropertyCard">
+            <div class="card-header gold-border">
+                <i class="bi bi-lightbulb me-2"></i> 知识产权赔偿计算
+            </div>
+            <div class="card-content gold-shadow">
+                <div class="card-form">
+                    <div class="card-form-row">
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="infringementProfit" class="form-label fw-bold">侵权所得（元）</label>
+                                <input type="number" class="form-control gold-effect" id="infringementProfit" placeholder="请输入侵权所得" min="0">
+                            </div>
+                        </div>
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="rightsCost" class="form-label fw-bold">权利成本（元）</label>
+                                <input type="number" class="form-control gold-effect" id="rightsCost" placeholder="请输入权利成本" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-form-actions">
+                        <button class="btn btn-primary gold-effect" onclick="calculateIntellectualProperty()">
+                            <i class="bi bi-calculator me-2"></i> 计算
+                        </button>
+                        <div class="loading mt-3" id="intellectualPropertyLoading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-display mt-3 gold-effect" id="intellectualPropertyResult"></div>
+                        <div class="error-display mt-3" id="intellectualPropertyError"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 公司解散清算费用计算 -->
+        <div class="card calculator-card gold-effect" id="companyLiquidationCard">
+            <div class="card-header gold-border">
+                <i class="bi bi-building me-2"></i> 公司清算费用计算
+            </div>
+            <div class="card-content gold-shadow">
+                <div class="card-form">
+                    <div class="card-form-row">
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="totalAssets" class="form-label fw-bold">总资产（元）</label>
+                                <input type="number" class="form-control gold-effect" id="totalAssets" placeholder="请输入总资产" min="0">
+                            </div>
+                        </div>
+                        <div class="card-form-col">
+                            <div class="form-group">
+                                <label for="totalLiabilities" class="form-label fw-bold">总负债（元）</label>
+                                <input type="number" class="form-control gold-effect" id="totalLiabilities" placeholder="请输入总负债" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-form-actions">
+                        <button class="btn btn-primary gold-effect" onclick="calculateCompanyLiquidation()">
+                            <i class="bi bi-calculator me-2"></i> 计算
+                        </button>
+                        <div class="loading mt-3" id="companyLiquidationLoading">
+                            <div class="loading-spinner"></div>
+                        </div>
+                    </div>
+                    <div class="result-section">
+                        <div class="result-display mt-3 gold-effect" id="companyLiquidationResult"></div>
+                        <div class="error-display mt-3" id="companyLiquidationError"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="law-decoration gavel"></div>
+<div class="law-decoration book"></div>
+<div class="scroll-indicator">
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<script>
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // 初始显示第一个计算器
+        showCalculator('interest');
+    });
+    document.getElementById('homeButton').addEventListener('click', function() {
+        // 替换为你想要跳转的端口地址
+        window.location.href = 'http://127.0.0.1:8000';
+    });
+    // 切换计算器
+    function switchCalculator(calculatorType) {
+        // 隐藏所有计算器
+        document.querySelectorAll('.calculator-card').forEach(card => {
+            card.classList.remove('active');
+        });
+
+        // 显示选中的计算器
+        document.getElementById(`${calculatorType}Card`).classList.add('active');
+
+        // 更新侧边栏菜单激活状态
+        document.querySelectorAll('.sidebar-menu li').forEach(item => {
+            item.classList.remove('active');
+        });
+
+        // 找到对应的菜单项并激活
+        const activeItem = document.querySelector(`.sidebar-menu li[onclick="switchCalculator('${calculatorType}')"]`);
+        if (activeItem) {
+            activeItem.classList.add('active');
+        }
+
+        // 在移动设备上点击后关闭侧边栏
+        if (window.innerWidth <= 992) {
+            document.querySelector('.sidebar').classList.remove('active');
+            document.querySelector('.main-content').style.marginLeft = '0';
+        }
+    }
+
+    // 切换利率输入框
+    function toggleRateInput() {
+        const isLpr = document.getElementById('lprRate').checked;
+        const rateInput = document.getElementById('rate');
+        rateInput.disabled = isLpr;
+        rateInput.placeholder = isLpr ? '使用LPR利率' : '请输入利率（%）';
+    }
+
+    // 获取最新LPR
+    async function fetchLPR() {
+        try {
+            // 模拟从后端获取LPR
+            const mockLPR = 3.85;
+            document.getElementById('rate').value = mockLPR;
+            document.getElementById('lprRate').checked = true;
+            toggleRateInput();
+        } catch (error) {
+            alert('获取LPR失败，请检查网络连接');
+        }
+    }
+
+    // 显示加载动画
+    function showLoading(section) {
+        const loadingElement = document.getElementById(`${section}Loading`);
+        if (loadingElement) {
+            loadingElement.style.display = 'block';
+        }
+        const resultElement = document.getElementById(`${section}Result`);
+        if (resultElement) {
+            resultElement.textContent = '';
+        }
+        const errorElement = document.getElementById(`${section}Error`);
+        if (errorElement) {
+            errorElement.textContent = '';
+        }
+    }
+
+    // 隐藏加载动画
+    function hideLoading(section) {
+        const loadingElement = document.getElementById(`${section}Loading`);
+        if (loadingElement) {
+            loadingElement.style.display = 'none';
+        }
+    }
+
+    // 显示结果
+    function showResult(section, result) {
+        const resultElement = document.getElementById(`${section}Result`);
+        if (resultElement) {
+            resultElement.textContent = result;
+        }
+    }
+
+    // 显示错误
+    function showError(section, error) {
+        const errorElement = document.getElementById(`${section}Error`);
+        if (errorElement) {
+            errorElement.textContent = error;
+        }
+    }
+
+    // 计算利息
+    function calculateInterest() {
+        showLoading('interest');
+        try {
+            const principal = parseFloat(document.getElementById('principal').value) || 0;
+            let rate = 0;
+            if (document.getElementById('lprRate').checked) {
+                rate = 3.85; // 模拟LPR值
+            } else {
+                rate = parseFloat(document.getElementById('rate').value) || 0;
+            }
+            const period = parseFloat(document.getElementById('period').value) || 0;
+
+            if (principal <= 0 || rate <= 0 || period <= 0) {
+                hideLoading('interest');
+                showError('interest', '请输入有效的数值');
+                return;
+            }
+
+            const result = (principal * rate * period / 100).toFixed(2);
+            hideLoading('interest');
+            showResult('interest', `利息: ¥${result}`);
+        } catch (error) {
+            hideLoading('interest');
+            showError('interest', '计算失败，请检查您的输入');
+        }
+    }
+
+    // 计算违约金
+    function calculateLiquidatedDamages() {
+        showLoading('breach');
+        try {
+            const principal = parseFloat(document.getElementById('breachPrincipal').value) || 0;
+            const breachRate = parseFloat(document.getElementById('breachRate').value) || 0;
+
+            if (principal <= 0 || breachRate <= 0) {
+                hideLoading('breach');
+                showError('breach', '请输入有效的数值');
+                return;
+            }
+
+            const result = (principal * breachRate / 100).toFixed(2);
+            hideLoading('breach');
+            showResult('breach', `违约金: ¥${result}`);
+        } catch (error) {
+            hideLoading('breach');
+            showError('breach', '计算失败，请检查您的输入');
+        }
+    }
+
+    // 计算诉讼费
+    function calculateLawsuitFee() {
+        showLoading('lawsuit');
+        try {
+            const amount = parseFloat(document.getElementById('lawsuitAmount').value) || 0;
+
+            if (amount <= 0) {
+                hideLoading('lawsuit');
+                showError('lawsuit', '请输入有效的诉讼请求金额');
+                return;
+            }
+
+            const result = (amount * 0.02).toFixed(2); // 假设诉讼费是金额的2%
+            hideLoading('lawsuit');
+            showResult('lawsuit', `诉讼费: ¥${result}`);
+        } catch (error) {
+            hideLoading('lawsuit');
+            showError('lawsuit', '计算失败，请检查您的输入');
+        }
+    }
+
+    // 计算迟延履行利息
+    function calculateDelayedInterest() {
+        showLoading('delay');
+        try {
+            const principal = parseFloat(document.getElementById('delayPrincipal').value) || 0;
+            const delayDays = parseFloat(document.getElementById('delayDays').value) || 0;
+
+            if (principal <= 0 || delayDays <= 0) {
+                hideLoading('delay');
+                showError('delay', '请输入有效的数值');
+                return;
+            }
+
+            const result = (principal * 0.05 * (delayDays / 365)).toFixed(2); // 假设年利率5%
+            hideLoading('delay');
+            showResult('delay', `迟延履行利息: ¥${result}`);
+        } catch (error) {
+            hideLoading('delay');
+            showError('delay', '计算失败，请检查您的输入');
+        }
+    }
+
+    // 计算执行费
+    function calculateExecutionFee() {
+        showLoading('execution');
+        try {
+            const amount = parseFloat(document.getElementById('executionAmount').value) || 0;
+
+            if (amount <= 0) {
+                hideLoading('execution');
+                showError('execution', '请输入有效的执行金额');
+                return;
+            }
+
+            const result = (amount * 0.01).toFixed(2); // 假设执行费是金额的1%
+            hideLoading('execution');
+            showResult('execution', `执行费: ¥${result}`);
+        } catch (error) {
+            hideLoading('execution');
+            showError('execution', '计算失败，请检查您的输入');
+        }
+    }
+
+    // 计算财产保全费
+    function calculatePreservationFee() {
+        showLoading('preservation');
+        try {
+            const amount = parseFloat(document.getElementById('preservationAmount').value) || 0;
+
+            if (amount <= 0) {
+                hideLoading('preservation');
+                showError('preservation', '请输入有效的财产保全金额');
+                return;
+            }
+
+            const result = (amount * 0.005).toFixed(2); // 假设财产保全费是金额的0.5%
+            hideLoading('preservation');
+            showResult('preservation', `财产保全费: ¥${result}`);
+        } catch (error) {
+            hideLoading('preservation');
+            showError('preservation', '计算失败，请检查您的输入');
+        }
+    }
+
+    // 计算赔偿金
+    function calculateCompensation() {
+        showLoading('compensation');
+        try {
+            const actualLoss = parseFloat(document.getElementById('actualLoss').value) || 0;
+            const mentalDamage = parseFloat(document.getElementById('mentalDamage').value) || 0;
+
+            const result = (actualLoss + mentalDamage).toFixed(2);
+            hideLoading('compensation');
+            showResult('compensation', `赔偿金: ¥${result}`);
+        } catch (error) {
+            hideLoading('compensation');
+            showError('compensation', '计算失败，请检查您的输入');
+        }
+    }
+
+    // 计算抚养费
+    function calculateChildSupport() {
+        showLoading('childSupport');
+        try {
+            const income = parseFloat(document.getElementById('income').value) || 0;
+            const children = parseInt(document.getElementById('children').value) || 1;
+
+            if (income <= 0) {
+                hideLoading('childSupport');
+                showError('childSupport', '请输入有效的收入金额');
+                return;
+            }
+
+            const result = ((income * 0.3) / children).toFixed(2); // 假设抚养费是收入的30%，分摊到每个子女
+            hideLoading('childSupport');
+            showResult('childSupport', `抚养费: ¥${result}/月`);
+        } catch (error) {
+            hideLoading('childSupport');
+            showError('childSupport', '计算失败，请检查您的输入');
+        }
+    }
+
+    // 计算定金罚则
+    function calculateDepositPenalty() {
+        showLoading('depositPenalty');
+        try {
+            const depositAmount = parseFloat(document.getElementById('depositAmount').value) || 0;
+
+            if (depositAmount <= 0) {
+                hideLoading('depositPenalty');
+                showError('depositPenalty', '请输入有效的定金金额');
+                return;
+            }
+
+            const result = (depositAmount * 0.2).toFixed(2); // 假设定金罚则是定金的20%
+            hideLoading('depositPenalty');
+            showResult('depositPenalty', `定金罚则: ¥${result}`);
+        } catch (error) {
+            hideLoading('depositPenalty');
+            showError('depositPenalty', '计算失败，请检查您的输入');
+        }
+    }
+
+    // 计算工伤赔偿
+    function calculateWorkInjury() {
+        showLoading('workInjury');
+        try {
+            const injuryLevel = parseInt(document.getElementById('injuryLevel').value);
+            const monthlySalary = parseFloat(document.getElementById('monthlySalary').value) || 0;
+
+            if (monthlySalary <= 0) {
+                hideLoading('workInjury');
+                showError('workInjury', '请输入有效的月工资');
+                return;
+            }
+
+            const result = (monthlySalary * (11 - injuryLevel)).toFixed(2); // 假设赔偿金额与工伤等级相关
+            hideLoading('workInjury');
+            showResult('workInjury', `一次性伤残补助金: ¥${result}`);
+        } catch (error) {
+            hideLoading('workInjury');
+            showError('workInjury', '计算失败，请检查您的输入');
+        }
+    }
+
+    // 计算交通事故赔偿
+    function calculateTrafficAccident() {
+        showLoading('trafficAccident');
+        try {
+            const liabilityPercentage = parseFloat(document.getElementById('liabilityPercentage').value) || 0;
+            const totalLoss = parseFloat(document.getElementById('totalLoss').value) || 0;
+
+            if (liabilityPercentage < 0 || liabilityPercentage > 100 || totalLoss <= 0) {
+                hideLoading('trafficAccident');
+                showError('trafficAccident', '请输入有效的数值');
+                return;
+            }
+
+            const result = (totalLoss * (liabilityPercentage / 100)).toFixed(2);
+            hideLoading('trafficAccident');
+            showResult('trafficAccident', `赔偿金额: ¥${result}`);
+        } catch (error) {
+            hideLoading('trafficAccident');
+            showError('trafficAccident', '计算失败，请检查您的输入');
+        }
+    }
+
+    // 计算知识产权赔偿
+    function calculateIntellectualProperty() {
+        showLoading('intellectualProperty');
+        try {
+            const infringementProfit = parseFloat(document.getElementById('infringementProfit').value) || 0;
+            const rightsCost = parseFloat(document.getElementById('rightsCost').value) || 0;
+
+            const result = (infringementProfit + rightsCost).toFixed(2);
+            hideLoading('intellectualProperty');
+            showResult('intellectualProperty', `赔偿金额: ¥${result}`);
+        } catch (error) {
+            hideLoading('intellectualProperty');
+            showError('intellectualProperty', '计算失败，请检查您的输入');
+        }
+    }
+
+    // 计算公司清算费用
+    function calculateCompanyLiquidation() {
+        showLoading('companyLiquidation');
+        try {
+            const totalAssets = parseFloat(document.getElementById('totalAssets').value) || 0;
+            const totalLiabilities = parseFloat(document.getElementById('totalLiabilities').value) || 0;
+
+            if (totalAssets < 0 || totalLiabilities < 0) {
+                hideLoading('companyLiquidation');
+                showError('companyLiquidation', '请输入有效的数值');
+                return;
+            }
+
+            const result = (totalAssets - totalLiabilities).toFixed(2);
+            hideLoading('companyLiquidation');
+            showResult('companyLiquidation', `清算费用: ¥${result}`);
+        } catch (error) {
+            hideLoading('companyLiquidation');
+            showError('companyLiquidation', '计算失败，请检查您的输入');
+        }
+    }
+</script>
+</body>
+</html>

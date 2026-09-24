@@ -1,0 +1,235 @@
+/* 合规检查页面样式 */
+.compliance-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 粒子效果 */
+.particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(150, 130, 100, 0.3);
+  border-radius: 50%;
+  animation: float 5s infinite ease-in-out;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-20px) translateX(20px);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.8;
+  }
+}
+
+/* 动态背景图案 */
+.background-patterns {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.legal-icon {
+  position: absolute;
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.1;
+  animation-duration: 20s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.legal-icon-scale {
+  width: 80px;
+  height: 80px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23948264'%3E%3Cpath d='M12 2L9.12 5h5.76L12 2M12 6a3 3 0 0 0-3 3v1h6V9a3 3 0 0 0-3-3m7 3h-1v6l4 4H4l4-4V9H7a5 5 0 0 1-5 5v4h18v-4a5 5 0 0 1-5-5z'/%3E%3C/svg%3E");
+  top: 20%;
+  left: 10%;
+  animation-name: float-scale;
+}
+
+.legal-icon-gavel {
+  width: 60px;
+  height: 60px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23948264'%3E%3Cpath d='M1 21h12v2H1zM5.245 8.07l2.83-2.827 14.14 14.142-2.828 2.828zM13.317 1l5.657 5.656-1.414 1.415-5.657-5.657zM3.825 9.485l5.657 5.657-1.414 1.414-5.657-5.657z'/%3E%3C/svg%3E");
+  top: 50%;
+  right: 15%;
+  animation-name: float-gavel;
+}
+
+.legal-icon-book {
+  width: 70px;
+  height: 70px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23948264'%3E%3Cpath d='M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z'/%3E%3C/svg%3E");
+  bottom: 10%;
+  left: 30%;
+  animation-name: float-book;
+}
+
+@keyframes float-scale {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(10deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+@keyframes float-gavel {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(-5deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+@keyframes float-book {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(5deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+.compliance-content {
+  max-width: 800px;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.compliance-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(150, 130, 100, 0.15);
+  backdrop-filter: blur(8px);
+  padding: 24px;
+}
+
+.compliance-title {
+  text-align: center;
+  color: #5a4a42;
+  margin-bottom: 24px;
+}
+
+.provider-selector {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.compliance-upload {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px dashed rgba(150, 130, 100, 0.3);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.compliance-upload:hover {
+  border-color: #c4a86a;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 24px rgba(150, 130, 100, 0.1);
+}
+
+.upload-content {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.upload-icon {
+  font-size: 48px;
+  color: #c4a86a;
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.icon-aura {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(196, 168, 106, 0.2) 0%, transparent 60%);
+  animation: aura-pulse 3s ease infinite;
+}
+
+@keyframes aura-pulse {
+  0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.4; transform: translate(-50%, -50%) scale(1.2); }
+}
+
+.legal-icons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.loading-container {
+  text-align: center;
+  padding: 40px 0;
+}
+
+.compliance-alert {
+  margin-bottom: 24px;
+}
+
+.result-card {
+  margin-top: 24px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.result-item {
+  padding: 12px;
+  border-bottom: 1px solid rgba(150, 130, 100, 0.1);
+  transition: all 0.3s ease;
+}
+
+.result-item:hover {
+  background: rgba(150, 130, 100, 0.05);
+  transform: translateY(-2px);
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+  .compliance-container {
+    padding: 1rem;
+  }
+
+  .compliance-card {
+    padding: 16px;
+  }
+
+  /*.compliance-title {*/
+  /*  font-size: 1.5rem;*/
+  /*}*/
+}
